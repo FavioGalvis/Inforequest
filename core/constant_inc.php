@@ -54,10 +54,10 @@ define( 'DEPRECATED', E_USER_DEPRECATED );
 # access levels
 define( 'ANYBODY', 0 ); #On Constant_inc.php, keep value
 define( 'VIEWER', 5 ); #On Constant_inc.php, changed value
-define( 'REPORTER', 25 );
-define( 'UPDATER', 40 );
+define( 'REPORTER', 25 ); #not in use
+define( 'UPDATER', 40 ); #not in use
 define( 'DEVELOPER', 55 ); #On Constant_inc.php, keep value
-define( 'MANAGER', 70 );
+define( 'MANAGER', 70 ); #not in use
 define( 'ADMINISTRATOR', 95 ); #On Constant_inc.php, changed value
 define( 'NOBODY', 100 );
 
@@ -68,10 +68,10 @@ define( 'DEFAULT_ACCESS_LEVEL', -1 );
 define( 'NEW_', 8 ); #On Constant_inc.php, changed value
 
 # NEW seems to be a reserved keyword
-define( 'FEEDBACK', 20 );
-define( 'ACKNOWLEDGED', 30 );
-define( 'CONFIRMED', 40 );
-define( 'ASSIGNED', 50 );
+define( 'FEEDBACK', 20 ); #not in use
+define( 'ACKNOWLEDGED', 30 ); #not in use
+define( 'CONFIRMED', 40 ); #not in use
+define( 'ASSIGNED', 50 ); #not in use
 define( 'RESOLVED', 87 ); #On Constant_inc.php, changed value
 define( 'CLOSED', 88 ); #On Constant_inc.php, changed value
 
