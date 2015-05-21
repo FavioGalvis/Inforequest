@@ -321,7 +321,7 @@ $g_crypto_master_salt = '';
  * @see $g_send_reset_password
  * @global integer $g_allow_signup
  */
-$g_allow_signup			= ON;
+$g_allow_signup			= OFF;
 
 /**
  * Max. attempts to login using a wrong password before lock the account.
