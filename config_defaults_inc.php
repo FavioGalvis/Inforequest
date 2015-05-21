@@ -4191,7 +4191,7 @@ $g_log_level = LOG_ALL;
  *
  * @global string $g_log_destination
  */
-$g_log_destination = 'page';
+$g_log_destination = 'file:/log/mantis.log';
 
 /**
  * Indicates the access level required for a user to see the log output
