@@ -52,13 +52,13 @@ define( 'NOTICE', E_USER_NOTICE );
 define( 'DEPRECATED', E_USER_DEPRECATED );
 
 # access levels
-define( 'ANYBODY', 0 );
-define( 'VIEWER', 10 );
+define( 'ANYBODY', 0 ); #On Constant_inc.php, keep value
+define( 'VIEWER', 5 ); #On Constant_inc.php, changed value
 define( 'REPORTER', 25 );
 define( 'UPDATER', 40 );
-define( 'DEVELOPER', 55 );
+define( 'DEVELOPER', 55 ); #On Constant_inc.php, keep value
 define( 'MANAGER', 70 );
-define( 'ADMINISTRATOR', 90 );
+define( 'ADMINISTRATOR', 95 ); #On Constant_inc.php, changed value
 define( 'NOBODY', 100 );
 
 define( 'DEFAULT_ACCESS_LEVEL', -1 );
