@@ -188,7 +188,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 	# if db version is 0, we do not have a valid database.
 	$t_db_version = config_get( 'database_version', 0 );
 	if( $t_db_version == 0 ) {
-		$t_warnings[] = lang_get( 'error_database_no_schema_version' );
+		$t_warnings[] = sprintf(lang_get( 'error_database_no_schema_version' ), $g_webmaster_email);
 	}
 
 	# Check for db upgrade for versions > 1.0.0 using new installer and schema
