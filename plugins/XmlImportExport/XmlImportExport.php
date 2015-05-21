@@ -38,7 +38,7 @@ class XmlImportExportPlugin extends MantisPlugin {
 
 		$this->version = '1.3.0';
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
+			'MantisCore' => 'INFOR-Alpha 3.0',
 		);
 
 		$this->author = 'MantisBT Team';
