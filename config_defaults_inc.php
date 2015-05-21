@@ -330,7 +330,7 @@ $g_allow_signup			= OFF;
  * Set to OFF to disable this control
  * @global integer $g_max_failed_login_count
  */
-$g_max_failed_login_count = OFF;
+$g_max_failed_login_count = 5;
 
 /**
  * access level required to be notified when a new user has been created using
@@ -574,14 +574,14 @@ $g_limit_email_domains = array();
  * This specifies the access level that is needed to get the mailto: links.
  * @global integer $g_show_user_email_threshold
  */
-$g_show_user_email_threshold = NOBODY;
+$g_show_user_email_threshold = ADMINISTRATOR;
 
 /**
  * This specifies the access level that is needed to see realnames on user view
  * page
  * @global integer $g_show_user_realname_threshold
  */
-$g_show_user_realname_threshold = NOBODY;
+$g_show_user_realname_threshold = ADMINISTRATOR;
 
 /**
  * If use_x_priority is set to ON, what should the value be?
@@ -1225,7 +1225,7 @@ $g_private_news_threshold = DEVELOPER;
  * look in constant_inc.php for values
  * @global integer $g_default_new_account_access_level
  */
-$g_default_new_account_access_level = REPORTER;
+$g_default_new_account_access_level = VIEWER;
 
 /**
  * Default Project View Status (VS_PUBLIC or VS_PRIVATE)
@@ -4172,7 +4172,7 @@ $g_stop_on_errors = OFF;
  *
  * @global integer $g_log_level
  */
-$g_log_level = LOG_NONE;
+$g_log_level = LOG_ALL;
 
 /**
  * Specifies where the log data goes
@@ -4191,7 +4191,7 @@ $g_log_level = LOG_NONE;
  *
  * @global string $g_log_destination
  */
-$g_log_destination = '';
+$g_log_destination = 'page';
 
 /**
  * Indicates the access level required for a user to see the log output
