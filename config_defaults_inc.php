@@ -4172,7 +4172,7 @@ $g_stop_on_errors = OFF;
  *
  * @global integer $g_log_level
  */
-$g_log_level = LOG_ALL;
+$g_log_level = LOG_NONE;
 
 /**
  * Specifies where the log data goes
@@ -4191,7 +4191,7 @@ $g_log_level = LOG_ALL;
  *
  * @global string $g_log_destination
  */
-$g_log_destination = 'file:/log/mantis.log';
+$g_log_destination = '';
 
 /**
  * Indicates the access level required for a user to see the log output
