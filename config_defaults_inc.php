@@ -4201,7 +4201,7 @@ $g_log_destination = '';
  *
  * @global integer $g_show_log_threshold
  */
-$g_show_log_threshold = ADMINISTRATOR;
+$g_show_log_threshold = NOBODY;
 
 ##########################
 # Configuration Settings #
