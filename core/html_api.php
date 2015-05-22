@@ -300,7 +300,7 @@ function html_page_bottom1a( $p_file = null ) {
 }
 
 /**
- * (1) Print the document type and the opening <html> tag
+ * Print the document type and the opening <html> tag
  * @return void
  */
 function html_begin() {
@@ -309,7 +309,7 @@ function html_begin() {
 }
 
 /**
- * (2) Begin the <head> section
+ * Begin the <head> section
  * @return void
  */
 function html_head_begin() {
@@ -317,7 +317,7 @@ function html_head_begin() {
 }
 
 /**
- * (3) Print the content-type
+ * Print the content-type
  * @return void
  */
 function html_content_type() {
@@ -325,7 +325,7 @@ function html_content_type() {
 }
 
 /**
- * (4) Print the window title
+ * Print the window title
  * @param string $p_page_title Window title.
  * @return void
  */
@@ -356,7 +356,7 @@ function require_css( $p_stylesheet_path ) {
 }
 
 /**
- * (5) Print the link to include the CSS file
+ * Print the link to include the CSS file
  * @return void
  */
 function html_css() {
@@ -384,7 +384,7 @@ function html_css_link( $p_filename ) {
 
 
 /**
- * (6) Print an HTML meta tag to redirect to another page
+ * Print an HTML meta tag to redirect to another page
  * This function is optional and may be called by pages that need a redirect.
  * $p_time is the number of seconds to wait before redirecting.
  * If we have handled any errors on this page return false and don't redirect.
@@ -429,7 +429,8 @@ function require_js( $p_script_path ) {
 
 
 /**
- * (6) End the <head> section
+ * End the <head> section
+
  * @return void
  */
 function html_head_end() {
@@ -439,7 +440,8 @@ function html_head_end() {
 }
 
 /**
- * (7) Begin the <body> section
+ * Begin the <body> section
+
  * @return void
  */
 function html_body_begin() {
@@ -457,7 +459,8 @@ function html_body_begin() {
 }
 
 /**
- * (8) Print a user-defined banner at the top of the page if there is one.
+ * Print a user-defined banner at the top of the page if there is one.
+
  * @return void
  */
 function html_top_banner() {
@@ -495,7 +498,8 @@ function html_top_banner() {
 }
 
 /**
- * (9) Print the user's account information
+ * Print the user's account information
+
  * Also print the select box where users can switch projects
  * @return void
  */
@@ -590,7 +594,8 @@ function html_login_info() {
 }
 
 /**
- * (10) Print a user-defined banner at the bottom of the page if there is one.
+ * Print a user-defined banner at the bottom of the page if there is one.
+
  * @return void
  */
 function html_bottom_banner() {
@@ -628,7 +633,8 @@ function html_is_auto_refresh() {
 }
 
 /**
- * (11) Print the page footer information
+ * Print the page footer information
+
  * @return void
  */
 function html_footer() {
@@ -746,11 +752,15 @@ function html_footer() {
 }
 
 /**
- * (12) End the <body> section
+ * End the <body> section
+
  * @return void
  */
 function html_body_end() {
 	global $g_scripts_included;
+
+
+	event_signal( 'EVENT_LAYOUT_BODY_END' );
 
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
@@ -761,15 +771,14 @@ function html_body_end() {
 		html_javascript_link( $t_script_path );
 	}
 
-	event_signal( 'EVENT_LAYOUT_BODY_END' );
-
 	echo '</div>', "\n";
 
 	echo '</body>', "\n";
 }
 
 /**
- * (13) Print the closing <html> tag
+ * Print the closing <html> tag
+
  * @return void
  */
 function html_end() {
@@ -1336,19 +1345,24 @@ function print_summary_menu( $p_page = '' ) {
 }
 
 /**
- * Print the color legend for the status colors
+ * Print the color legend for the status colors at the requested position
+ * @param int  $p_display_position   STATUS_LEGEND_POSITION_TOP or STATUS_LEGEND_POSITION_BOTTOM
+ * @param bool $p_restrict_by_filter If true, only display status visible in current filter
  * @return void
  */
-function html_status_legend() {
-	# Don't show the legend if only one status is selected by the current filter
-	$t_current_filter = current_user_get_bug_filter();
-	if( $t_current_filter === false ) {
-		$t_current_filter = filter_get_default();
-	}
-	$t_simple_filter = $t_current_filter['_view_type'] == 'simple';
-	if( $t_simple_filter ) {
-		if( !filter_field_is_any( $t_current_filter[FILTER_PROPERTY_STATUS][0] ) ) {
-			return;
+function html_status_legend( $p_display_position, $p_restrict_by_filter = false ) {
+
+	if( $p_restrict_by_filter ) {
+		# Don't show the legend if only one status is selected by the current filter
+		$t_current_filter = current_user_get_bug_filter();
+		if( $t_current_filter === false ) {
+			$t_current_filter = filter_get_default();
+		}
+		$t_simple_filter = $t_current_filter['_view_type'] == 'simple';
+		if( $t_simple_filter ) {
+			if( !filter_field_is_any( $t_current_filter[FILTER_PROPERTY_STATUS][0] ) ) {
+				return;
+			}
 		}
 	}
 
@@ -1368,44 +1382,54 @@ function html_status_legend() {
 		}
 	}
 
-	# Remove status values that won't appear as a result of the current filter
-	foreach( $t_status_array as $t_status => $t_name ) {
-		if( $t_simple_filter ) {
-			if( !filter_field_is_none( $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) &&
-				$t_status >= $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) {
-				unset( $t_status_array[$t_status] );
+	if( $p_restrict_by_filter ) {
+		# Remove status values that won't appear as a result of the current filter
+		foreach( $t_status_array as $t_status => $t_name ) {
+			if( $t_simple_filter ) {
+				if( !filter_field_is_none( $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) &&
+					$t_status >= $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) {
+					unset( $t_status_array[$t_status] );
+				}
+			} else {
+				if( !in_array( META_FILTER_ANY, $t_current_filter[FILTER_PROPERTY_STATUS] ) &&
+					!in_array( $t_status, $t_current_filter[FILTER_PROPERTY_STATUS] ) ) {
+					unset( $t_status_array[$t_status] );
+				}
 			}
-		} else {
-			if( !in_array( META_FILTER_ANY, $t_current_filter[FILTER_PROPERTY_STATUS] ) &&
-				!in_array( $t_status, $t_current_filter[FILTER_PROPERTY_STATUS] ) ) {
-				unset( $t_status_array[$t_status] );
-			}
+		}
+
+		# If there aren't at least two statuses showable by the current filter,
+		# don't draw the status bar
+		if( count( $t_status_array ) <= 1 ) {
+			return;
 		}
 	}
 
-	# If there aren't at least two statuses showable by the current filter,
-	# don't draw the status bar
-	if( count( $t_status_array ) <= 1 ) {
-		return;
+	# Display the legend
+	$t_legend_position = config_get( 'status_legend_position' ) & $p_display_position;
+
+	if( STATUS_LEGEND_POSITION_NONE != $t_legend_position ) {
+		echo '<br />';
+		echo '<table class="status-legend width100" cellspacing="1">';
+		echo '<tr>';
+
+		# draw the status bar
+		$t_status_enum_string = config_get( 'status_enum_string' );
+		foreach( $t_status_array as $t_status => $t_name ) {
+			$t_val = isset( $t_status_names[$t_status] ) ? $t_status_names[$t_status] : $t_status_array[$t_status];
+			$t_status_label = MantisEnum::getLabel( $t_status_enum_string, $t_status );
+
+			echo '<td class="small-caption ' . $t_status_label . '-color">' . $t_val . '</td>';
+		}
+
+		echo '</tr>';
+		echo '</table>';
+		if( ON == config_get( 'status_percentage_legend' ) ) {
+			html_status_percentage_legend();
+		}
 	}
-
-	echo '<br />';
-	echo '<table class="status-legend width100" cellspacing="1">';
-	echo '<tr>';
-
-	# draw the status bar
-	$t_status_enum_string = config_get( 'status_enum_string' );
-	foreach( $t_status_array as $t_status => $t_name ) {
-		$t_val = isset( $t_status_names[$t_status] ) ? $t_status_names[$t_status] : $t_status_array[$t_status];
-		$t_status_label = MantisEnum::getLabel( $t_status_enum_string, $t_status );
-
-		echo '<td class="small-caption ' . $t_status_label . '-color">' . $t_val . '</td>';
-	}
-
-	echo '</tr>';
-	echo '</table>';
-	if( ON == config_get( 'status_percentage_legend' ) ) {
-		html_status_percentage_legend();
+	if( STATUS_LEGEND_POSITION_TOP == $t_legend_position ) {
+		echo '<br />';
 	}
 }
 
