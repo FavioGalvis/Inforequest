@@ -65,7 +65,7 @@ define( 'DEFAULT_ACCESS_LEVEL', -1 );
 
 # This is used in add user to project
 # status
-define( 'NEW_', 8 ); #On Constant_inc.php, changed value
+define( 'NEW_', 10 ); #On Constant_inc.php, changed value
 
 # NEW seems to be a reserved keyword
 define( 'FEEDBACK', 20 ); #not in use
