@@ -108,9 +108,9 @@ $t_row_count = count( $t_result );
 if( $f_type_page == 'html' ) {
 	layout_page_header();
 } else {
-	echo '<html xmlns:o="urn:schemas-microsoft-com:office:office"
+	echo '<meta http-equiv="Content-type" content="text/html; charset=utf-8"><html xmlns:o="urn:schemas-microsoft-com:office:office"
 		xmlns:w="urn:schemas-microsoft-com:office:word"
-		xmlns="http://www.w3.org/TR/REC-html40">';
+		xmlns="http://www.w3.org/TR/REC-html40">'; 
 	echo '<body>';
 }
 
