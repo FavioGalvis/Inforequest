@@ -3429,7 +3429,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 		</tr>
 
 		<!-- Match Type -->
-		<tr>
+		<tr style="display: none">
 			<td class="small category"><a href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>" id="match_type_filter"><?php echo lang_get( 'filter_match_type' )?>:</a></td>
 			<td class="small" id="match_type_filter_target">
 			<?php
