@@ -640,8 +640,8 @@ function access_get_local_level( $p_user_id, $p_project_id ) {
  */
 function access_get_status_threshold( $p_status, $p_project_id = ALL_PROJECTS ) {
 	$t_thresh_array = config_get( 'set_status_threshold', null, null, $p_project_id );
-	if( isset( $t_thresh_array[(int)$p_status] ) ) {
-		return (int)$t_thresh_array[(int)$p_status];
+	if( isset( $t_thresh_array[$p_status] ) ) {
+		return $t_thresh_array[$p_status];
 	} else {
 		if( $p_status == config_get( 'bug_submit_status', null, null, $p_project_id ) ) {
 			return config_get( 'report_bug_threshold', null, null, $p_project_id );
