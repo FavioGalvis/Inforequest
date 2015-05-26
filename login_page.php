@@ -261,7 +261,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				</div>
 			<?php } ?>
 			<?php if( $t_session_validation ) { ?>
-				<div class="clearfix">
+				<div class="clearfix" style="display: none">
 					<label for="secure-session" class="inline">
 						<input id="secure-session" type="checkbox" name="secure_session" class="ace" <?php echo ( $t_default_secure_session ? 'checked="checked" ' : '' ) ?> />
 						<span class="lbl"> <?php echo lang_get( 'secure_session_long' ) ?></span>
