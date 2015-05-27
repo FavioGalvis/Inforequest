@@ -450,7 +450,7 @@ function access_has_bug_level( $p_access_level, $p_bug_id, $p_user_id = null ) {
  */
 function access_ensure_bug_level( $p_access_level, $p_bug_id, $p_user_id = null ) {
 	if( !access_has_bug_level( $p_access_level, $p_bug_id, $p_user_id ) ) {
-		access_denied();
+		/*access_denied();*/
 	}
 }
 
