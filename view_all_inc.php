@@ -221,13 +221,13 @@ write_bug_rows( $t_rows );
 ?>
 	<div class="form-inline pull-left">
 <?php
-		if( $g_checkboxes_exist ) {
+		if( ( $g_checkboxes_exist ) && ( access_has_project_level( config_get( 'show_bug_group_action_threshold', null, null, $t_project_id ) ) ) ) {
 			echo '<label class="inline">';
 			echo '<input class="ace check_all" type="checkbox" id="bug_arr_all" name="bug_arr_all" value="all" class="check_all input-small" />';
 			echo '<span class="lbl"> ' . lang_get( 'select_all' ) . ' </span > ';
 			echo '</label>';
 		}
-		if( $g_checkboxes_exist ) {
+		if( ( $g_checkboxes_exist ) && ( access_has_project_level( config_get( 'show_bug_group_action_threshold', null, null, $t_project_id ) ) ) ) {
 ?>
 			<select name="action" class="input-sm">
 				<?php print_all_bug_action_option_list($t_unique_project_ids) ?>

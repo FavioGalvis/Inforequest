@@ -182,12 +182,12 @@ function bug_group_action_get_commands( array $p_project_ids = null ) {
 
 	$t_commands = array();
 	foreach( $p_project_ids as $t_project_id ) {
-
+            if ( access_has_project_level( config_get( 'show_bug_group_action_threshold', null, null, $t_project_id ) ) ) {
 		if( !isset( $t_commands['MOVE'] ) &&
 			access_has_project_level( config_get( 'move_bug_threshold', null, null, $t_project_id ), $t_project_id ) ) {
 			$t_commands['MOVE'] = lang_get( 'actiongroup_menu_move' );
 		}
-
+                
 		if( !isset( $t_commands['COPY'] ) &&
 			access_has_any_project( config_get( 'report_bug_threshold', null, null, $t_project_id ) ) ) {
 			$t_commands['COPY'] = lang_get( 'actiongroup_menu_copy' );
@@ -295,6 +295,7 @@ function bug_group_action_get_commands( array $p_project_ids = null ) {
 			$t_command_caption = sprintf( lang_get( 'actiongroup_menu_update_field' ), lang_get_defaulted( $t_custom_field_def['name'] ) );
 			$t_commands[$t_command_id] = string_display( $t_command_caption );
 		}
+            }
 	}
 
 	$t_custom_group_actions = config_get( 'custom_group_actions' );

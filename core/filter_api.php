@@ -2293,14 +2293,14 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			<td class="small-caption category">
 				<a href="<?php echo $t_filters_url . FILTER_PROPERTY_SEVERITY . '[]';?>" id="show_severity_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'severity_label' )?></a>
 			</td>
-			<td class="small-caption category">
+			<td colspan="2" class="small-caption category">
 				<a href="<?php echo $t_filters_url . FILTER_PROPERTY_RESOLUTION . '[]';?>" id="show_resolution_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'resolution_label' )?></a>
 			</td>
-			<td class="small-caption category">
+			<!--td class="small-caption category">
 				<?php if( ON == config_get( 'enable_profiles' ) ) { ?>
 					<a href="<?php echo $t_filters_url . FILTER_PROPERTY_PROFILE_ID . '[]';?>" id="show_profile_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'profile_label' )?></a>
 				<?php } ?>
-			</td>
+			</td-->
 			<?php if( $t_filter_cols > 8 ) {
 			echo '<td class="small-caption" colspan="' . ( $t_filter_cols - 8 ) . '">&#160;</td>';
 		}?>
@@ -2549,7 +2549,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 		?>
 			</td>
 			<?php } else { ?>
-				<td></td>
+				<!--td></td-->
 			<?php }
 				if( $t_filter_cols > 8 ) {
 					echo '<td class="small-caption" colspan="' . ( $t_filter_cols - 8 ) . '">&#160;</td>';
@@ -2880,7 +2880,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			</td>
 			<td class="small" colspan="2">
 			</td>
-			<td class="small category" >
+			<td class="small category">
 				<a href="<?php echo $t_filters_url . FILTER_PROPERTY_FILTER_BY_DATE;?>" id="do_filter_by_date_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'use_date_filters_label' )?></a>
 			</td>
 			<td class="small category" colspan="2">
@@ -2990,7 +2990,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			echo '<td class="small" colspan="' . ( $t_filter_cols - 8 ) . '">&#160;</td>';
 		}?>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<td class="small category">
 				<?php if( ON == config_get( 'enable_profiles' ) ) { ?>
 					<a href="<?php echo $t_filters_url . FILTER_PROPERTY_PLATFORM;?>" id="platform_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'platform_label' )?></a>
@@ -3015,7 +3015,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			echo '<td class="small" colspan="' . ( $t_filter_cols - 8 ) . '">&#160;</td>';
 		}?>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<?php if( ON == config_get( 'enable_profiles' ) ) { ?>
 			<td class="small" id="platform_filter_target">
 				<?php print_multivalue_field( FILTER_PROPERTY_PLATFORM, $t_filter[FILTER_PROPERTY_PLATFORM] ); ?>
@@ -3300,7 +3300,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			}
 		}
 		?>
-		<tr>
+		<tr style="display: none">
 			<td class="small category">
 				<a href="<?php echo $t_filters_url . FILTER_PROPERTY_NOTE_USER_ID;?>" id="note_user_id_filter"<?php echo $t_dynamic_filter_expander_class ?>>
 					<?php echo lang_get( 'note_user_id_label' )?>

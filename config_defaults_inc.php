@@ -3188,6 +3188,12 @@ $g_filter_custom_fields_per_row = 8;
 
 /**
  *
+ * @global integer $g_show_bug_group_action_threshold
+ */
+$g_show_bug_group_action_threshold = REPORTER;
+
+/**
+ *
  * @global integer $g_view_filters
  */
 $g_view_filters = SIMPLE_DEFAULT;
