@@ -670,6 +670,9 @@ if( $t_show_attachments ) {
 <?php
 	}
 ?>
+<?php
+    if ( (config_get ( 'show_report_stay_checkbox' )) ){
+?>
 	<tr>
 		<th class="category">
 			<?php print_documentation_link( 'report_stay' ) ?>
@@ -681,6 +684,9 @@ if( $t_show_attachments ) {
 			</label>
 		</td>
 	</tr>
+<?php
+    }
+?>
 </table>
 </div>
 </div>

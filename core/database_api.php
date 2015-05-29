@@ -442,7 +442,7 @@ function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset
 
 	if( !$t_result ) {
 		db_error( $p_query );
-		trigger_error( ERROR_DB_QUERY_FAILED, ERROR );
+		/*trigger_error( ERROR_DB_QUERY_FAILED, ERROR );*/
 		return false;
 	} else {
 		$g_db_param->pop();
