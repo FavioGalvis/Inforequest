@@ -274,7 +274,6 @@ for( $i = 0;$i < $t_count_bis; $i++ ) {
             $t_current_auth = access_get_project_level( $t_bug_assign->project_id );
             $t_bug_status = $t_bug_assign->status;
             $t_enum_workflow_bis = get_status_option_list( $t_current_auth, $t_bug_status, FALSE, NULL, $t_bug_assign->project_id );
-            echo '--'.$t_bug_assign->status.'--';
             if( count( $t_enum_workflow_bis ) > 0 ) {
             } else {
                 unset($t_rows[$i]);
