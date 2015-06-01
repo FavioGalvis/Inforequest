@@ -186,15 +186,18 @@ if( ( $f_new_status >= $t_resolved ) && ( ( $f_new_status < $t_closed ) || ( $t_
 						break;
 					}
 				}
-
-				print_enum_string_option_list( 'resolution', $t_resolution );
+                                if ( $f_new_status >= $t_closed ){
+                                    print_enum_string_option_list( 'resolution_finished', $t_resolution );
+                                } elseif ( $f_new_status == $t_resolved ) {
+                                    print_enum_string_option_list( 'resolution_resolved', $t_resolution );
+                                }
 			?>
 					</select>
 				</td>
 			</tr>
 <?php } ?>
 
-<?php
+<?php /*
 if( $f_new_status >= $t_resolved
 	&& $f_new_status < $t_closed
 	&& $t_resolution != config_get( 'bug_duplicate_resolution' ) ) { ?>
@@ -207,7 +210,7 @@ if( $f_new_status >= $t_resolved
 					<input type="text" class="input-sm" name="duplicate_id" maxlength="10" />
 				</td>
 			</tr>
-<?php } ?>
+<?php } */ ?>
 
 <?php
 if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get( 'update_bug_threshold' ) ), $f_bug_id ) ) {
