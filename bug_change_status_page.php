@@ -221,7 +221,9 @@ if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get(
 	}
 ?>
 <!-- Assigned To -->
-			<tr>
+<?php	if ( $f_new_status < $t_resolved ){
+?>                                
+                        <tr>
 				<th class="category">
 					<span class="required">*</span><?php echo lang_get( 'assigned_to' ) ?>
 				</th>
@@ -232,7 +234,9 @@ if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get(
 					</select>
 				</td>
 			</tr>
-<?php } ?>
+<?php } 
+
+} ?>
 
 <?php if( $t_can_update_due_date ) {
 	$t_date_to_display = '';
