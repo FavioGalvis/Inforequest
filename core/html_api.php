@@ -958,7 +958,7 @@ function html_button_bug_assign_to( BugData $p_bug ) {
 		}
 	}
 
-	echo '<form method="post" action="bug_update.php" class="form-inline">';
+        echo '<form method="post" action="bug_update.php" class="form-inline">';
 	echo form_security_field( 'bug_update' );
 	echo '<input type="hidden" name="last_updated" value="' . $p_bug->last_updated . '" />';
 	echo '<input type="hidden" name="action_type" value="' . BUG_UPDATE_TYPE_ASSIGN . '" />';
@@ -1148,9 +1148,15 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 		echo '</div>';
 
 		# ASSIGN button
-		echo '<div class="pull-left padding-right-8">';
-		html_button_bug_assign_to( $t_bug );
-		echo '</div>';
+                $t_user_assign_button = current_user_get_access_level();
+                if ( ( config_get ( 'show_assign_to_button_override' ) ) <= $t_user_assign_button ) {
+                    echo '<div class="pull-left padding-right-8">';
+                    html_button_bug_assign_to( $t_bug );
+                    echo '</div>';
+                } else {
+                    echo '<div class="pull-left padding-right-8">';
+                    echo '</div>';
+                }
 
 		# Change status button/dropdown
 		echo '<div class="pull-left padding-right-8">';

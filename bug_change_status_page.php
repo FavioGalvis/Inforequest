@@ -172,7 +172,7 @@ if( ( $f_new_status >= $t_resolved ) && ( ( $f_new_status < $t_closed ) || ( $t_
 <!-- Resolution -->
 			<tr>
 				<th class="category">
-					<?php echo lang_get( 'resolution' ) ?>
+					<span class="required">*</span><?php echo lang_get( 'resolution' ) ?>
 				</th>
 				<td>
 					<select name="resolution" class="input-sm">
@@ -223,7 +223,7 @@ if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get(
 <!-- Assigned To -->
 			<tr>
 				<th class="category">
-					<?php echo lang_get( 'assigned_to' ) ?>
+					<span class="required">*</span><?php echo lang_get( 'assigned_to' ) ?>
 				</th>
 				<td>
 					<select name="handler_id" class="input-sm">
