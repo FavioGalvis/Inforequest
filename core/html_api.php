@@ -1199,9 +1199,15 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 	echo '</div>';
 
 	# CLOSE button
-	echo '<div class="pull-left padding-right-2">';
-	html_button_bug_close( $t_bug );
-	echo '</div>';
+	$t_user_assign_button = current_user_get_access_level();
+        if ( ( config_get ( 'show_close_button_override' ) ) <= $t_user_assign_button ) {
+            echo '<div class="pull-left padding-right-2">';
+            html_button_bug_close( $t_bug );
+            echo '</div>';
+        } else {
+            echo '<div class="pull-left padding-right-2">';
+            echo '</div>';
+        }
 
 	# MOVE button
 	echo '<div class="pull-left padding-right-2">';
