@@ -99,3 +99,7 @@ $g_default_redirect_delay in config_inc.php.
 As a general debugging tip you should be extremely generous in using echo,
 print and exit functions.  This is the quickest way to see if a database
 query actually contains what you want, etc.
+
+SCREENSHOTS
+-------------
+[![View.php](http://s6.postimg.org/mcg46ynrl/Screenshot_8.png)](http://www.informatica-tr.com)
