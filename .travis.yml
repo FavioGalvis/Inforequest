@@ -9,7 +9,7 @@ language: php
 #
 
 before_script:
-  - chmod +x build.sh
+  - chmod +x ./scripts/travis_before_script.sh
   
   - ./scripts/travis_before_script.sh
 
