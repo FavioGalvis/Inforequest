@@ -55,7 +55,7 @@ notifications:
     on_success: change
     on_failure: always
     channels:
-       - "chat.freenode.net#mantisbt"
+       - "http://webchat.freenode.net/?channels=%23inforequest&uio=OT10cnVlJjExPTIwNQa5"
     skip_join: true
     template:
       - "Build #%{build_number}: %{repository} %{branch} (%{commit}) %{author} - %{message}"
