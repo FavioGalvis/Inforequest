@@ -2,7 +2,7 @@ InfoRequest Bug Tracker (original  from MantisBT)
 =============================
 [![Logo](http://s6.postimg.org/b9hteq3m5/mantis_logo.png)](http://www.informatica-tr.com) - 
 [![Build Status](https://travis-ci.org/FavioGalvis/Inforequest.svg?branch=modern-ui-2)](https://travis-ci.org/FavioGalvis/Inforequest) - 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](http://webchat.freenode.net/?channels=%23inforequest&uio=OT10cnVlJjExPTIwNQa5)
+[![Chat](http://s6.postimg.org/7f31s7l59/Screenshot_1.png)](http://webchat.freenode.net/?channels=%23inforequest&uio=OT10cnVlJjExPTIwNQa5)
 
 For complete documentation, please read the administration guide included with
 this release in the doc/<lang> directory.  The guide is available in text, PDF,
