@@ -9,7 +9,8 @@ language: php
 #
 
 before_script:
-  chmod +x the_file_name
+  - chmod +x build.sh
+  
   - ./scripts/travis_before_script.sh
 
 script:
