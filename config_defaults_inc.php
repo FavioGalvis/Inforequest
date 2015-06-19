@@ -4348,3 +4348,10 @@ $g_webservice_error_when_version_not_found = ON;
  */
 $g_webservice_version_when_not_found = '';
 
+/**
+ * When a mail is stated to use the modern version included in custom_functions_inc.php
+ * Require to include functions for every email posibility in the email_api.php file
+ * Defaults to disabled.
+ * @global boolean $g_mail_use_modern_template
+ */
+$g_mail_use_modern_template = OFF;
