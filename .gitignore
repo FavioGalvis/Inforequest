@@ -9,6 +9,8 @@ api/soap/mc_config_inc.php
 # Config files
 config/
 mantis_offline.php
+library/jpgraph
+truetype
 
 # Docbook builds
 docbook/*/*/builddate
