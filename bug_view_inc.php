@@ -370,6 +370,31 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	echo '<tr class="hidden"></tr>';
 }
 
+# Custom Fields
+$t_custom_fields_found = false;
+$t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
+
+foreach( $t_related_custom_field_ids as $t_id ) {
+	if( !custom_field_has_read_access( $t_id, $f_bug_id ) ) {
+		continue;
+	} # has read access
+
+	$t_custom_fields_found = true;
+	$t_def = custom_field_get_definition( $t_id );
+
+	echo '<tr>';
+	echo '<th class="bug-custom-field category">', string_display( lang_get_defaulted( $t_def['name'] ) ), '</th>';
+	echo '<td class="bug-custom-field" colspan="5">';
+	print_custom_field_value( $t_def, $t_id, $f_bug_id );
+	echo '</td></tr>';
+}
+
+if( $t_custom_fields_found ) {
+	# spacer
+	echo '<tr class="spacer"><td colspan="6"></td></tr>';
+	echo '<tr class="hidden"></tr>';
+}
+
 #
 # Reporter
 #
@@ -705,31 +730,6 @@ if( $t_can_attach_tag ) {
 # spacer
 echo '<tr class="spacer"><td colspan="6"></td></tr>';
 echo '<tr class="hidden"></tr>';
-
-# Custom Fields
-$t_custom_fields_found = false;
-$t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
-
-foreach( $t_related_custom_field_ids as $t_id ) {
-	if( !custom_field_has_read_access( $t_id, $f_bug_id ) ) {
-		continue;
-	} # has read access
-
-	$t_custom_fields_found = true;
-	$t_def = custom_field_get_definition( $t_id );
-
-	echo '<tr>';
-	echo '<th class="bug-custom-field category">', string_display( lang_get_defaulted( $t_def['name'] ) ), '</th>';
-	echo '<td class="bug-custom-field" colspan="5">';
-	print_custom_field_value( $t_def, $t_id, $f_bug_id );
-	echo '</td></tr>';
-}
-
-if( $t_custom_fields_found ) {
-	# spacer
-	echo '<tr class="spacer"><td colspan="6"></td></tr>';
-	echo '<tr class="hidden"></tr>';
-}
 
 # Attachments
 if( $t_show_attachments ) {

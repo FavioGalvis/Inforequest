@@ -185,7 +185,7 @@ function email_is_valid( $p_email ) {
  */
 function email_ensure_valid( $p_email ) {
 	if( !email_is_valid( $p_email ) ) {
-		trigger_error( ERROR_EMAIL_INVALID, ERROR );
+		trigger_error( ERROR_EMAIL_INVALID, ERROR_FTP_CONNECT_ERROR );
 	}
 }
 
@@ -210,7 +210,7 @@ function email_is_disposable( $p_email ) {
  */
 function email_ensure_not_disposable( $p_email ) {
 	if( email_is_disposable( $p_email ) ) {
-		trigger_error( ERROR_EMAIL_DISPOSABLE, ERROR );
+		trigger_error( ERROR_EMAIL_DISPOSABLE, ERROR_FTP_CONNECT_ERROR );
 	}
 }
 
@@ -453,7 +453,10 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 }
 
 /**
- * Send password to user
+ * Send password to user.
+ * @since Inforequest Alpha-4 the addition of the verification for ther modern
+ * version of the email was included for the $g_mail_use_modern_template.
+ * @author Favio Galvis <fgalvis@infortributos.com>.
  * @param integer $p_user_id      A valid user identifier.
  * @param string  $p_password     A valid password.
  * @param string  $p_confirm_hash Confirmation hash.
@@ -468,9 +471,10 @@ function email_signup( $p_user_id, $p_password, $p_confirm_hash, $p_admin_name =
 	#	@@@ thraxisp - removed to address #6084 - user won't have any settings yet,
 	#  use same language as display for the email
 	#  lang_push( user_pref_get_language( $p_user_id ) );
-	# retrieve the username and email
+	# retrieve the username, email and real name
 	$t_username = user_get_field( $p_user_id, 'username' );
 	$t_email = user_get_email( $p_user_id );
+        $t_realname = user_get_realname($p_user_id );
 
 	# Build Welcome Message
 	$t_subject = '[' . config_get( 'window_title' ) . '] ' . lang_get( 'new_account_subject' );
@@ -480,9 +484,18 @@ function email_signup( $p_user_id, $p_password, $p_confirm_hash, $p_admin_name =
 	} else {
 		$t_intro_text = sprintf( lang_get( 'new_account_greeting' ), $t_username );
 	}
-
-	$t_message = $t_intro_text . "\n\n" . string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . "\n\n" . lang_get( 'new_account_message' ) . "\n\n" . lang_get( 'new_account_do_not_reply' );
-
+        
+        # Select the email version to be build acording to the config
+        # of $g_email_mail_use_modern_template and the include of custom functions
+        # on custom_functions_inc.php
+        if( config_get( 'mail_use_modern_template' ) ) {
+            $t_hash_url = string_get_confirm_hash_url( $p_user_id, $p_confirm_hash );
+            $t_endnote = lang_get( 'new_account_message' ) . lang_get( 'new_account_do_not_reply' );
+            $t_message = custom_function_override_email_on_singup ( $t_realname, $t_intro_text, $t_hash_url, $t_endnote);
+            $t_message = custom_function_override_email_message($t_message);
+        } else {
+            $t_message = $t_intro_text . "\n\n" . string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . "\n\n" . lang_get( 'new_account_message' ) . "\n\n" . lang_get( 'new_account_do_not_reply' );
+        }
 	# Send signup email regardless of mail notification pref
 	# or else users won't be able to sign up
 	if( !is_blank( $t_email ) ) {
@@ -495,6 +508,9 @@ function email_signup( $p_user_id, $p_password, $p_confirm_hash, $p_admin_name =
 
 /**
  * Send confirm_hash URL to user forgets the password
+ * @since Inforequest Alpha-4 the addition of the verification for ther modern
+ * version of the email was included for the $g_mail_use_modern_template.
+ * @author Favio Galvis <fgalvis@infortributos.com>.
  * @param integer $p_user_id      A valid user identifier.
  * @param string  $p_confirm_hash Confirmation hash.
  * @return void
@@ -507,13 +523,27 @@ function email_send_confirm_hash_url( $p_user_id, $p_confirm_hash ) {
 
 	lang_push( user_pref_get_language( $p_user_id ) );
 
-	# retrieve the username and email
+	# retrieve the username, email and real name
 	$t_username = user_get_field( $p_user_id, 'username' );
 	$t_email = user_get_email( $p_user_id );
+        $t_realname = user_get_realname($p_user_id );
 
 	$t_subject = '[' . config_get( 'window_title' ) . '] ' . lang_get( 'lost_password_subject' );
-
-	$t_message = lang_get( 'reset_request_msg' ) . " \n\n" . string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . " \n\n" . lang_get( 'new_account_username' ) . ' ' . $t_username . " \n" . lang_get( 'new_account_IP' ) . ' ' . $_SERVER['REMOTE_ADDR'] . " \n\n" . lang_get( 'new_account_do_not_reply' );
+        
+        # Select the email version to be build acording to the config
+        # of $g_email_mail_use_modern_template and the include of custom functions
+        # on custom_functions_inc.php
+        if( config_get( 'mail_use_modern_template' ) ) {
+            $t_intro_text = lang_get( 'reset_request_msg' );
+            $t_hash_url = string_get_confirm_hash_url( $p_user_id, $p_confirm_hash );
+            $t_user_field = lang_get( 'new_account_username' ) . ' ' . $t_username;
+            $t_user_addrs = lang_get( 'new_account_IP' ) . ' ' . $_SERVER['REMOTE_ADDR'];
+            $t_endnote = lang_get( 'new_account_do_not_reply' );
+            $t_message = custom_function_override_email_on_lostpassword( $t_realname, $t_intro_text, $t_hash_url, $t_user_field, $t_user_addrs, $t_endnote);
+            $t_message = custom_function_override_email_message($t_message);
+        } else {
+            $t_message = lang_get( 'reset_request_msg' ) . " \n\n" . string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . " \n\n" . lang_get( 'new_account_username' ) . ' ' . $t_username . " \n" . lang_get( 'new_account_IP' ) . ' ' . $_SERVER['REMOTE_ADDR'] . " \n\n" . lang_get( 'new_account_do_not_reply' );
+        }
 
 	# Send password reset regardless of mail notification preferences
 	# or else users won't be able to receive their reset passwords
@@ -640,7 +670,7 @@ function email_relationship_added( $p_bug_id, $p_related_bug_id, $p_rel_type ) {
 	$t_opt[] = bug_format_id( $p_related_bug_id );
 	global $g_relationships;
 	if( !isset( $g_relationships[$p_rel_type] ) ) {
-		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR );
+		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR_FTP_CONNECT_ERROR );
 	}
 
 	$t_recipients = email_collect_recipients( $p_bug_id, 'relation' );
@@ -688,7 +718,7 @@ function email_relationship_deleted( $p_bug_id, $p_related_bug_id, $p_rel_type )
 	$t_opt[] = bug_format_id( $p_related_bug_id );
 	global $g_relationships;
 	if( !isset( $g_relationships[$p_rel_type] ) ) {
-		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR );
+		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR_FTP_CONNECT_ERROR );
 	}
 
     $t_recipients = email_collect_recipients( $p_bug_id, 'relation' );
@@ -924,7 +954,7 @@ function email_send( EmailData $p_email_data ) {
 			break;
 	}
 
-	$t_mail->IsHTML( false );              # set email format to plain text
+	$t_mail->IsHTML( true );              # set email format to plain text
 	$t_mail->WordWrap = 80;              # set word wrap to 80 characters
 	$t_mail->Priority = $t_email_data->metadata['priority'];  # Urgent = 1, Not Urgent = 5, Disable = 0
 	$t_mail->CharSet = $t_email_data->metadata['charset'];
@@ -1138,8 +1168,6 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 
 	# build message
 
-	$t_message = lang_get_defaulted( $p_message_id, null );
-
 	if( is_array( $p_header_optional_params ) ) {
 		$t_message = vsprintf( $t_message, $p_header_optional_params );
 	}
@@ -1148,7 +1176,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 		$t_message .= " \n";
 	}
 
-	$t_message .= email_format_bug_message( $p_visible_bug_data );
+	$t_message .= email_format_bug_message( $p_visible_bug_data, $p_message_id );
 
 	# build headers
 	$t_bug_id = $p_visible_bug_data['email_bug'];
@@ -1173,12 +1201,17 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
  * @param array $p_visible_bug_data Bug data array to format.
  * @return string
  */
-function email_format_bug_message( array $p_visible_bug_data ) {
+function email_format_bug_message( array $p_visible_bug_data, $p_message_id ) {
 	$t_normal_date_format = config_get( 'normal_date_format' );
 	$t_complete_date_format = config_get( 'complete_date_format' );
-
-	$t_email_separator1 = config_get( 'email_separator1' );
-	$t_email_separator2 = config_get( 'email_separator2' );
+        if( config_get( 'mail_use_modern_template' ) ) {
+            $t_email_separator1 = div_d_modern ();
+            $t_email_separator2 = div_b_modern ();
+            $t_email_separator3 = div_c_modern ();
+        } else {
+            $t_email_separator1 = config_get( 'email_separator1' );
+            $t_email_separator2 = config_get( 'email_separator2' );
+        }
 	$t_email_padding_length = config_get( 'email_padding_length' );
 
 	$t_status = $p_visible_bug_data['email_status'];
@@ -1192,66 +1225,67 @@ function email_format_bug_message( array $p_visible_bug_data ) {
 	$p_visible_bug_data['email_reproducibility'] = get_enum_element( 'reproducibility', $p_visible_bug_data['email_reproducibility'] );
 
 	$t_message = $t_email_separator1 . " \n";
+        
+        $t_message .= '<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-weight:bold;font-size:15px;margin-bottom:0;margin-top:3px;color:#5f5f5f;line-height:135%">' . lang_get_defaulted( $p_message_id, null ) . '</div>';
 
+        $t_message .= email_format_attribute( $p_visible_bug_data, 'email_summary' );
+                
 	if( isset( $p_visible_bug_data['email_bug_view_url'] ) ) {
 		$t_message .= $p_visible_bug_data['email_bug_view_url'] . " \n";
-		$t_message .= $t_email_separator1 . " \n";
+		$t_message .= $t_email_separator2 . " \n";
 	}
 
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_reporter' );
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_handler' );
-	$t_message .= $t_email_separator1 . " \n";
+	$t_message .= $t_email_separator2 . " \n";
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_project' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_bug' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_category' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_reproducibility' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_severity' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_priority' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_status' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_target_version' );
-
-	# custom fields formatting
+        # custom fields formatting
 	foreach( $p_visible_bug_data['custom_fields'] as $t_custom_field_name => $t_custom_field_data ) {
 		$t_message .= utf8_str_pad( lang_get_defaulted( $t_custom_field_name, null ) . ': ', $t_email_padding_length, ' ', STR_PAD_RIGHT );
 		$t_message .= string_custom_field_value_for_email( $t_custom_field_data['value'], $t_custom_field_data['type'] );
-		$t_message .= " \n";
+		$t_message .= '<br>';
 	}
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_bug' );
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_category' );
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_reproducibility' );
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_severity' );
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_priority' );
+	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_status' );
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_target_version' );
 
 	# end foreach custom field
 
 	if( config_get( 'bug_resolved_status_threshold' ) <= $t_status ) {
 		$p_visible_bug_data['email_resolution'] = get_enum_element( 'resolution', $p_visible_bug_data['email_resolution'] );
 		$t_message .= email_format_attribute( $p_visible_bug_data, 'email_resolution' );
-		$t_message .= email_format_attribute( $p_visible_bug_data, 'email_fixed_in_version' );
+		//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_fixed_in_version' );
 	}
-	$t_message .= $t_email_separator1 . " \n";
+	$t_message .= $t_email_separator2 . " \n";
 
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_date_submitted' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_last_modified' );
-	$t_message .= $t_email_separator1 . " \n";
+	//$t_message .= email_format_attribute( $p_visible_bug_data, 'email_last_modified' );
+	$t_message .= $t_email_separator2 . " \n";
 
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_summary' );
+	//$t_message .= lang_get( 'email_description' ) . ": \n" . $p_visible_bug_data['email_description'] . "\n";
 
-	$t_message .= lang_get( 'email_description' ) . ": \n" . $p_visible_bug_data['email_description'] . "\n";
+	/*if( !is_blank( $p_visible_bug_data['email_steps_to_reproduce'] ) ) {
+		$t_message .= '<br>' . lang_get( 'email_steps_to_reproduce' ) . ": \n" . $p_visible_bug_data['email_steps_to_reproduce'] . "\n";
+	}*/
 
-	if( !is_blank( $p_visible_bug_data['email_steps_to_reproduce'] ) ) {
-		$t_message .= "\n" . lang_get( 'email_steps_to_reproduce' ) . ": \n" . $p_visible_bug_data['email_steps_to_reproduce'] . "\n";
-	}
-
-	if( !is_blank( $p_visible_bug_data['email_additional_information'] ) ) {
-		$t_message .= "\n" . lang_get( 'email_additional_information' ) . ": \n" . $p_visible_bug_data['email_additional_information'] . "\n";
-	}
+	/*if( !is_blank( $p_visible_bug_data['email_additional_information'] ) ) {
+		$t_message .= '<br>' . lang_get( 'email_additional_information' ) . ": \n" . $p_visible_bug_data['email_additional_information'] . "\n";
+	}*/
 
 	if( isset( $p_visible_bug_data['relations'] ) ) {
 		if( $p_visible_bug_data['relations'] != '' ) {
-			$t_message .= $t_email_separator1 . "\n" . str_pad( lang_get( 'bug_relationships' ), 20 ) . str_pad( lang_get( 'id' ), 8 ) . lang_get( 'summary' ) . "\n" . $t_email_separator2 . "\n" . $p_visible_bug_data['relations'];
+			$t_message .= $t_email_separator2 . "\n" . str_pad( lang_get( 'bug_relationships' ), 20 ) . str_pad( lang_get( 'id' ), 8 ) . lang_get( 'summary' ) . "\n" . $t_email_separator2 . "\n" . $p_visible_bug_data['relations'];
 		}
 	}
 
 	# Sponsorship
 	if( isset( $p_visible_bug_data['sponsorship_total'] ) && ( $p_visible_bug_data['sponsorship_total'] > 0 ) ) {
-		$t_message .= $t_email_separator1 . " \n";
-		$t_message .= sprintf( lang_get( 'total_sponsorship_amount' ), sponsorship_format_amount( $p_visible_bug_data['sponsorship_total'] ) ) . "\n\n";
+		$t_message .= $t_email_separator2 . " \n";
+		$t_message .= sprintf( lang_get( 'total_sponsorship_amount' ), sponsorship_format_amount( $p_visible_bug_data['sponsorship_total'] ) ) . '<br>';
 
 		if( isset( $p_visible_bug_data['sponsorships'] ) ) {
 			foreach( $p_visible_bug_data['sponsorships'] as $t_sponsorship ) {
@@ -1264,52 +1298,71 @@ function email_format_bug_message( array $p_visible_bug_data ) {
 		}
 	}
 
-	$t_message .= $t_email_separator1 . " \n\n";
+	$t_message .= $t_email_separator2 . " \n\n";
 
 	# format bugnotes
-	foreach( $p_visible_bug_data['bugnotes'] as $t_bugnote ) {
-		$t_last_modified = date( $t_normal_date_format, $t_bugnote->last_modified );
+	if( config_get( 'mail_show_bug_notes' ) ) {
+            foreach( $p_visible_bug_data['bugnotes'] as $t_bugnote ) {
+                    $t_last_modified = date( $t_normal_date_format, $t_bugnote->last_modified );
 
-		$t_formatted_bugnote_id = bugnote_format_id( $t_bugnote->id );
-		$t_bugnote_link = string_process_bugnote_link( config_get( 'bugnote_link_tag' ) . $t_bugnote->id, false, false, true );
+                    $t_formatted_bugnote_id = bugnote_format_id( $t_bugnote->id );
+                    $t_bugnote_link = string_process_bugnote_link( config_get( 'bugnote_link_tag' ) . $t_bugnote->id, false, false, true );
 
-		if( $t_bugnote->time_tracking > 0 ) {
-			$t_time_tracking = ' ' . lang_get( 'time_tracking' ) . ' ' . db_minutes_to_hhmm( $t_bugnote->time_tracking ) . "\n";
-		} else {
-			$t_time_tracking = '';
-		}
+                    if( $t_bugnote->time_tracking > 0 ) {
+                            $t_time_tracking = ' ' . lang_get( 'time_tracking' ) . ' ' . db_minutes_to_hhmm( $t_bugnote->time_tracking ) . '<br>';
+                    } else {
+                            $t_time_tracking = '';
+                    }
 
-		if( user_exists( $t_bugnote->reporter_id ) ) {
-			$t_access_level = access_get_project_level( $p_visible_bug_data['email_project_id'], $t_bugnote->reporter_id );
-			$t_access_level_string = ' (' . get_enum_element( 'access_levels', $t_access_level ) . ') - ';
-		} else {
-			$t_access_level_string = '';
-		}
+                    if( user_exists( $t_bugnote->reporter_id ) ) {
+                            $t_access_level = access_get_project_level( $p_visible_bug_data['email_project_id'], $t_bugnote->reporter_id );
+                            $t_access_level_string = ' (' . get_enum_element( 'access_levels', $t_access_level ) . ') - ';
+                    } else {
+                            $t_access_level_string = '';
+                    }
 
-		$t_string = ' (' . $t_formatted_bugnote_id . ') ' . user_get_name( $t_bugnote->reporter_id ) . $t_access_level_string . $t_last_modified . "\n" . $t_time_tracking . ' ' . $t_bugnote_link;
+                    $t_string = ' (' . $t_formatted_bugnote_id . ') ' . user_get_name( $t_bugnote->reporter_id ) . $t_access_level_string . $t_last_modified . '<br>' . $t_time_tracking . ' ' . $t_bugnote_link;
 
-		$t_message .= $t_email_separator2 . " \n";
-		$t_message .= $t_string . " \n";
-		$t_message .= $t_email_separator2 . " \n";
-		$t_message .= $t_bugnote->note . " \n\n";
-	}
+                    $t_message .= $t_email_separator2 . " \n";
+                    $t_message .= $t_string . " \n";
+                    $t_message .= $t_email_separator2 . " \n";
+                    $t_message .= $t_bugnote->note . '<br>';
+            }
+        }
 
 	# format history
 	if( array_key_exists( 'history', $p_visible_bug_data ) ) {
-		$t_message .= lang_get( 'bug_history' ) . " \n";
-		$t_message .= utf8_str_pad( lang_get( 'date_modified' ), 17 ) . utf8_str_pad( lang_get( 'username' ), 15 ) . utf8_str_pad( lang_get( 'field' ), 25 ) . utf8_str_pad( lang_get( 'change' ), 20 ) . " \n";
+		$t_message .= lang_get( 'bug_history' ) . '<br>';
+		$t_message .= custom_function_override_email_table_history_head_header () . utf8_str_pad( lang_get( 'date_modified' ), 17 ) . custom_function_override_email_table_history_head_body () . utf8_str_pad( lang_get( 'username' ), 15 ) . custom_function_override_email_table_history_head_body () . utf8_str_pad( lang_get( 'field' ), 25 ) . custom_function_override_email_table_history_head_body () . utf8_str_pad( lang_get( 'change' ), 20 ) . custom_function_override_email_table_history_head_footer ();
 
-		$t_message .= $t_email_separator1 . " \n";
-
+		//$t_message .= $t_email_separator2 . " \n";
+                $t_last_history_1 = NULL;
+                $t_last_history_2 = NULL;
+                $t_array_lenght = count( $p_visible_bug_data['history'] );
+                $i = 0;
 		foreach( $p_visible_bug_data['history'] as $t_raw_history_item ) {
 			$t_localized_item = history_localize_item( $t_raw_history_item['field'], $t_raw_history_item['type'], $t_raw_history_item['old_value'], $t_raw_history_item['new_value'], false );
-
-			$t_message .= utf8_str_pad( date( $t_normal_date_format, $t_raw_history_item['date'] ), 17 ) . utf8_str_pad( $t_raw_history_item['username'], 15 ) . utf8_str_pad( $t_localized_item['note'], 25 ) . utf8_str_pad( $t_localized_item['change'], 20 ) . "\n";
+                        if ( ($t_array_lenght-2) == $i )
+                        {
+                            $t_last_history_2 = custom_function_override_email_table_history_body_header () . utf8_str_pad( date( $t_normal_date_format, $t_raw_history_item['date'] ), 17 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_raw_history_item['username'], 15 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_localized_item['note'], 25 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_localized_item['change'], 20 ) . custom_function_override_email_table_history_body_footer ();
+                        }
+			$t_last_history_1 = custom_function_override_email_table_history_body_header () . utf8_str_pad( date( $t_normal_date_format, $t_raw_history_item['date'] ), 17 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_raw_history_item['username'], 15 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_localized_item['note'], 25 ) . custom_function_override_email_table_history_body_body () . utf8_str_pad( $t_localized_item['change'], 20 ) . custom_function_override_email_table_history_body_footer ();
+                        $i++;
 		}
-		$t_message .= $t_email_separator1 . " \n\n";
+                if ( $t_last_history_2 != NULL ) {
+                    $t_message .= $t_last_history_2;
+                }
+                $t_message .= $t_last_history_1;
+                $t_message .= custom_function_override_email_table_history_footer_footer ();
+		$t_message .= $t_email_separator3 . " \n\n";
 	}
 
-	return $t_message;
+        if( config_get( 'mail_use_modern_template' ) ) {
+            $t_message = custom_function_override_email_message($t_message);
+            return $t_message;
+        } else {
+            return $t_message;
+        }
 }
 
 /**
@@ -1322,7 +1375,7 @@ function email_format_bug_message( array $p_visible_bug_data ) {
  */
 function email_format_attribute( array $p_visible_bug_data, $p_attribute_id ) {
 	if( array_key_exists( $p_attribute_id, $p_visible_bug_data ) ) {
-		return utf8_str_pad( lang_get( $p_attribute_id ) . ': ', config_get( 'email_padding_length' ), ' ', STR_PAD_RIGHT ) . $p_visible_bug_data[$p_attribute_id] . "\n";
+		return utf8_str_pad( lang_get( $p_attribute_id ) . ': ', config_get( 'email_padding_length' ), ' ', STR_PAD_RIGHT ) . $p_visible_bug_data[$p_attribute_id] . '<br>';
 	}
 	return '';
 }

@@ -174,7 +174,7 @@ cat <<-EOF >> $MANTIS_BOOTSTRAP
 	EOF
 
 echo "Adding custom configuration options"
-sudo chmod 777 $MANTIS_CONFIG
+chmod 777 $MANTIS_CONFIG
 cat <<-EOF >> $MANTIS_CONFIG
 
 	# Configs required to ensure all PHPUnit tests are executed
