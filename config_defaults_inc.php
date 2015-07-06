@@ -2686,7 +2686,7 @@ $g_update_bugnote_threshold = DEVELOPER;
  * Threshold needed to view project documentation
  * @global integer $g_view_proj_doc_threshold
  */
-$g_view_proj_doc_threshold = ANYBODY;
+$g_view_proj_doc_threshold = VIEWER;
 
 /**
  * Site manager
