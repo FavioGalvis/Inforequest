@@ -142,7 +142,7 @@ function graph_bar( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_gr
 		$t_graph->renderToOutput( $p_graph_width, $p_graph_height );
 	} else {
 		$t_graph = new Graph( $p_graph_width, $p_graph_height );
-		$t_graph->img->SetMargin( 40, 40, 40, 170 );
+		$t_graph->img->SetMargin( 60, 60, 60, 250 );
 		if( ON == plugin_config_get( 'jpgraph_antialias' ) ) {
 			$t_graph->img->SetAntiAliasing();
 		}
@@ -188,7 +188,7 @@ function graph_bar( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_gr
  * @param integer $p_baseline     Jpgraph baseline.
  * @return void
  */
-function graph_group( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_graph_height = 400, $p_baseline = 100 ) {
+function graph_group( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_graph_height = 450, $p_baseline = 150 ) {
 	# $p_metrics is an array of three arrays
 	#   $p_metrics['open'] = array( 'enum' => value, ...)
 	#   $p_metrics['resolved']
@@ -238,7 +238,7 @@ function graph_group( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_
 	} else {
 		# defines margin according to height
 		$t_graph = new Graph( $p_graph_width, $p_graph_height );
-		$t_graph->img->SetMargin( 45, 35, 35, $p_baseline );
+		$t_graph->img->SetMargin( 45, 45, 45, $p_baseline );
 		if( ON == plugin_config_get( 'jpgraph_antialias' ) ) {
 			$t_graph->img->SetAntiAliasing();
 		}
@@ -257,6 +257,7 @@ function graph_group( array $p_metrics, $p_title = '', $p_graph_width = 350, $p_
 		$t_graph->xaxis->SetFont( $t_graph_font );
 		$t_graph->legend->Pos( 0.05, 0.08 );
 		$t_graph->legend->SetFont( $t_graph_font );
+                $t_graph->legend->SetShadow('gray@0.9',5);
 
 		$t_graph->yaxis->scale->ticks->SetDirection( -1 );
 		$t_graph->yaxis->SetFont( $t_graph_font );
@@ -340,14 +341,16 @@ function graph_pie( array $p_metrics, $p_title = '', $p_graph_width = 500, $p_gr
 		$t_graph->renderToOutput( $p_graph_width, $p_graph_height );
 	} else {
 		$t_graph = new PieGraph( $p_graph_width, $p_graph_height );
-		$t_graph->img->SetMargin( 40, 40, 40, 100 );
+		$t_graph->img->SetMargin( 40, 40, 40, 40 );
 		$t_graph->title->Set( $p_title );
 		$t_graph->title->SetFont( $t_graph_font, FS_BOLD );
 
 		$t_graph->SetMarginColor( 'white' );
 		$t_graph->SetFrame( false );
 
-		$t_graph->legend->Pos( $p_poshorizontal, $p_posvertical );
+		$t_graph->legend->SetAbsPos(10,10,'right','top');
+                $t_graph->legend->SetColumns(1);
+                $t_graph->legend->SetShadow('gray@0.9',5);
 		$t_graph->legend->SetFont( $t_graph_font );
 
 		$t_plot1 = new PiePlot3d( array_values( $p_metrics ) );
@@ -358,7 +361,13 @@ function graph_pie( array $p_metrics, $p_title = '', $p_graph_width = 500, $p_gr
 		# $t_plot1->SetTheme("sand");
 		$t_plot1->SetCenter( $p_center );
 		$t_plot1->SetAngle( 60 );
-		$t_plot1->SetLegends( array_keys( $p_metrics ) );
+                $t_data_legends = array_keys( $p_metrics );
+                foreach( $t_data_legends as $t_key => $t_dt ){
+                    $t_dt = $t_dt . ': %d';
+                    $t_data_legends[$t_key] = $t_dt;
+                }
+                unset ( $t_dt );
+		$t_plot1->SetLegends( $t_data_legends );
 
 		# Label format
 		$t_plot1->value->SetFormat( '%2.0f' );
