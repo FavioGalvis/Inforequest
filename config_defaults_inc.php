@@ -4360,3 +4360,16 @@ $g_webservice_version_when_not_found = '';
  * @global boolean $g_mail_use_modern_template
  */
 $g_mail_use_modern_template = OFF;
+
+/**
+ * this array sets the access thresholds needed to enter each status listed.
+ * if a status is not listed, it falls back to $g_update_bug_status_threshold
+ * example:
+ * $g_set_status_threshold = array(
+ *     ACKNOWLEDGED => MANAGER,
+ *     CONFIRMED => DEVELOPER,
+ *     CLOSED => MANAGER
+ * );
+ * @global array $g_set_status_threshold
+ */
+$g_set_status_to_threshold = array( NEW_ => REPORTER );

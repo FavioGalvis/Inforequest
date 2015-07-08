@@ -230,7 +230,7 @@ if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get(
 				<td>
 					<select name="handler_id" class="input-sm">
 						<option value="0"></option>
-						<?php print_assign_to_option_list( $t_suggested_handler_id, $t_bug->project_id ) ?>
+						<?php print_assign_to_option_list( $t_suggested_handler_id, $t_bug->project_id, $f_new_status ) ?>
 					</select>
 				</td>
 			</tr>

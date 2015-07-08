@@ -291,7 +291,7 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 		}
 		unset( $t_projects );
 	} else {
-		$t_users = project_get_all_user_rows( $p_project_id, $p_access );
+		$t_users = project_get_all_user_rows( $p_project_id, access_get_status_to_change_threshold( $p_access, $t_project_id ) );
 	}
 
 	# Add the specified user ID to the list

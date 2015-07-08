@@ -650,3 +650,25 @@ function access_get_status_threshold( $p_status, $p_project_id = ALL_PROJECTS ) 
 		}
 	}
 }
+
+/**
+ * get the access level to apear in the list of the issue to the new status
+ * If there is no specific differentiated access level, use the
+ * generic update_bug_status_threshold.
+ * @param integer $p_status     Status.
+ * @param integer $p_project_id Default value ALL_PROJECTS.
+ * @return integer integer representing user level e.g. DEVELOPER
+ * @access public
+ */
+function access_get_status_to_change_threshold( $p_status, $p_project_id = ALL_PROJECTS ) {
+	$t_thresh_array = config_get( 'set_status_to_threshold', null, null, $p_project_id );
+	if( isset( $t_thresh_array[$p_status] ) ) {
+		return $t_thresh_array[$p_status];
+	} else {
+		if( $p_status == config_get( 'bug_submit_status', null, null, $p_project_id ) ) {
+			return config_get( 'report_bug_threshold', null, null, $p_project_id );
+		} else {
+			return config_get( 'update_bug_status_threshold', null, null, $p_project_id );
+		}
+	}
+}
