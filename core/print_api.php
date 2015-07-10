@@ -297,22 +297,28 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 	# Add the specified user ID to the list
 	# If we have an array of user IDs, then we've been called from a filter
 	# so don't add anything
-	if( !is_array( $p_user_id ) &&
-		$p_user_id != NO_USER &&
-		!array_key_exists( $p_user_id, $t_users )
-	) {
-		$t_row = user_get_row( $p_user_id );
-		if( $t_row === false ) {
-			# User doesn't exist - create a dummy record for display purposes
-			$t_name = user_get_name( $p_user_id );
-			$t_row = array(
-				'id' => $p_user_id,
-				'username' => $t_name,
-				'realname' => $t_name,
-			);
-		}
-		$t_users[$p_user_id] = $t_row;
-	}
+        # @faviogalvis: the 'show_last_user_asigned_to_bug' checks if we have
+        # to show the last user asigned on the workflow, this is true by default
+        # but must be false if the user list on the bug_change_status_page
+        # should remain limited to the $g_set_status_to_threshold
+        if( config_get( 'show_last_user_asigned_to_bug' ) ){
+            if( !is_array( $p_user_id ) &&
+                    $p_user_id != NO_USER &&
+                    !array_key_exists( $p_user_id, $t_users )
+            ) {
+                    $t_row = user_get_row( $p_user_id );
+                    if( $t_row === false ) {
+                            # User doesn't exist - create a dummy record for display purposes
+                            $t_name = user_get_name( $p_user_id );
+                            $t_row = array(
+                                    'id' => $p_user_id,
+                                    'username' => $t_name,
+                                    'realname' => $t_name,
+                            );
+                    }
+                    $t_users[$p_user_id] = $t_row;
+            }
+        }
 
 	$t_display = array();
 	$t_sort = array();

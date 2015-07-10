@@ -4362,14 +4362,22 @@ $g_webservice_version_when_not_found = '';
 $g_mail_use_modern_template = OFF;
 
 /**
- * this array sets the access thresholds needed to enter each status listed.
- * if a status is not listed, it falls back to $g_update_bug_status_threshold
+ * this array sets the access user profile to be shown on the 
+ * bug_change_status_page.
+ * if a profile is not listed, it falls back to $g_update_bug_status_threshold
  * example:
  * $g_set_status_threshold = array(
  *     ACKNOWLEDGED => MANAGER,
  *     CONFIRMED => DEVELOPER,
  *     CLOSED => MANAGER
  * );
- * @global array $g_set_status_threshold
+ * @global array $g_set_status_to_threshold
  */
 $g_set_status_to_threshold = array( NEW_ => REPORTER );
+
+/**
+ * This bool sets if the last user asigned to the bug must be shown on the
+ * list in the bug_change_status_page.
+ * @global bool $g_show_last_user_asigned_to_bug
+ */
+$g_show_last_user_asigned_to_bug = OFF;
