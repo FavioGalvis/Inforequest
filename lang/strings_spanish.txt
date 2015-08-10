@@ -417,6 +417,7 @@ $s_back_to_bug_link = 'Volver a la incidencia';
 $s_update_simple_link = 'Actualización simple';
 $s_updating_bug_advanced_title = 'Actualizando información de la incidencia';
 $s_id = 'ID';
+$s_id2 = 'Requerimiento n°';
 $s_category = 'Categoría';
 $s_category_label = 'Categoría:';
 $s_severity = 'Severidad';

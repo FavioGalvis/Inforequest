@@ -156,6 +156,7 @@ $t_icon_path = config_get( 'icon_path' );
 
 	$t_icons = array(
 		array( 'print_all_bug_page_word', 'word', '', 'fileicons/doc.gif', 'Word 2000' ),
+                array( 'print_all_bug_page_word', 'word2', '', 'fileicons/pps.gif', 'Word 2000' ),
 		array( 'print_all_bug_page_word', 'html', 'target="_blank"', 'ie.gif', 'Word View' ) );
 
 	foreach ( $t_icons as $t_icon ) {

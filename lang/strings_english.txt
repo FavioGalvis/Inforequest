@@ -538,6 +538,7 @@ $s_back_to_bug_link = 'Back To Issue';
 $s_update_simple_link = 'Update Simple';
 $s_updating_bug_advanced_title = 'Updating Issue Information';
 $s_id = 'ID';
+$s_id2 = 'Requeriment n°';
 $s_category = 'Category';
 $s_category_label = 'Category:';
 $s_severity = 'Severity';
