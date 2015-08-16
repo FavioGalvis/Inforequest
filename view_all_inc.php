@@ -85,7 +85,6 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 
 
 # -- ====================== BUG LIST ============================ --
-html_status_legend( STATUS_LEGEND_POSITION_TOP, true );
 
 ?>
 <div class="col-md-12 col-xs-12">
@@ -170,7 +169,7 @@ html_status_legend( STATUS_LEGEND_POSITION_TOP, true );
  * @param array $p_rows An array of bug objects.
  * @return void
  */
-function write_bug_rows ( $p_rows ) {
+function write_bug_rows( array $p_rows ) {
 	global $g_columns, $g_filter;
 
 	$t_in_stickies = ( $g_filter && ( 'on' == $g_filter[FILTER_PROPERTY_STICKY] ) );
@@ -255,6 +254,7 @@ write_bug_rows( $t_rows );
 </form>
 </div>
 <?php
+
 # -- ====================== FILTER FORM ========================= --
 if( ( $t_filter_position & FILTER_POSITION_BOTTOM ) == FILTER_POSITION_BOTTOM ) {
 	filter_draw_selection_area( $f_page_number );

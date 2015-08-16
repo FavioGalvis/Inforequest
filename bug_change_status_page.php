@@ -385,14 +385,9 @@ if( ( $f_new_status >= $t_resolved ) ) {
 
 <?php event_signal( 'EVENT_BUGNOTE_ADD_FORM', array( $f_bug_id ) ); ?>
 
-		</tbody>
-	</table>
-			<!-- Submit Button -->
-	<div class="widget-toolbox padding-8 clearfix">
-		<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
-	</div>
-	<input type="hidden" name="action_type" value="<?php echo $f_change_type; ?>" />
-</form>
+</tbody>
+</table>
+<input type="hidden" name="action_type" value="<?php echo $f_change_type; ?>" />
 
 </div>
 </div>
