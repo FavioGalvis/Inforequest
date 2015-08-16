@@ -67,6 +67,7 @@ if( !$f_all && count( $t_events ) > MAX_EVENTS ) {
 } else {
     timeline_print_events( $t_events );
 }
+
 echo '</div></div>';
 ?>
 

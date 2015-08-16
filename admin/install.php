@@ -94,11 +94,6 @@ function print_test( $p_test_description, $p_result, $p_hard_fail = true, $p_mes
 #	7 = done, link to login or db updater
 $t_install_state = gpc_get_int( 'install', 0 );
 
-html_begin();
-html_head_begin();
-html_css_link( 'admin.css' );
-html_content_type();
-html_javascript_link( 'jquery-1.11.3.min.js' );
 layout_page_header_begin( 'Administration - Installation' );
 html_javascript_link( 'install.js' );
 layout_page_header_end();

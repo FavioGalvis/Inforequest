@@ -101,8 +101,7 @@ function html_set_rss_link( $p_rss_feed_url ) {
 }
 
 /**
- * This method must be called before the html_page_top* methods.  It marks the page as not
- * for indexing.
+ * This method marks the page as not for indexing by search engines
  * @return void
  */
 function html_robots_noindex() {
@@ -129,6 +128,15 @@ function html_rss_link() {
  */
 function html_javascript_link( $p_filename ) {
 	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'javascript/' . $p_filename ), '"></script>' . "\n";
+}
+
+/**
+ * Prints a <script> tag to include a JavaScript file.
+ * @param string $p_url fully qualified domain name for the cdn js file
+ * @return void
+ */
+function html_javascript_cdn_link( $p_url ) {
+	echo "\t", '<script type="text/javascript" src="', $p_url, '"></script>' . "\n";
 }
 
 /**
@@ -194,7 +202,7 @@ function require_css( $p_stylesheet_path ) {
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
-	html_css_link( 'jquery-ui-1.11.4.min.css' );
+	html_css_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css' );
 	html_css_link( 'common_config.php' );
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
@@ -214,6 +222,14 @@ function html_css_link( $p_filename ) {
 	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), false ), '" />' . "\n";
 }
 
+/**
+ * Prints a CSS link for CDN
+ * @param string $p_url fully qualified domain name to the js file name
+ * @return void
+ */
+function html_css_cdn_link( $p_url ) {
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', $p_url, '" />' . "\n";
+}
 
 /**
  * Print an HTML meta tag to redirect to another page
@@ -267,9 +283,8 @@ function html_head_javascript() {
 	global $g_scripts_included;
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	html_javascript_link( 'jquery-2.1.4.min.js' );
-	html_javascript_link( 'jquery-ui-1.11.4.min.js' );
-	layout_head_javascript();
+	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' );
+	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' );
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
@@ -312,7 +327,7 @@ function html_top_banner() {
 			echo '<a id="logo-link" href="', config_get( 'logo_url' ), '">';
 		}
 		$t_alternate_text = string_html_specialchars( config_get( 'window_title' ) );
-		echo '<img id="logo-image" alt="', $t_alternate_text, '" src="' . helper_mantis_url( $t_logo_image ) . '" />';
+		echo '<img id="logo-image" alt="', $t_alternate_text, '" style="max-height: 80px;" src="' . helper_mantis_url( $t_logo_image ) . '" />';
 		if( $t_show_url ) {
 			echo '</a>';
 		}
@@ -522,9 +537,9 @@ function print_manage_menu( $p_page = '' ) {
 		$t_active =  $t_page['url'] == $p_page ? 'active' : '';
 		echo '<li class="' . $t_active .  '">' . "\n";
 		if( $t_page['label'] == '' ) {
-			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'"><i class="blue ace-icon fa fa-info-circle"></i> </a>';
+			echo '<a href="'. lang_get_defaulted( $t_page['url'] ) .'"><i class="blue ace-icon fa fa-info-circle"></i> </a>';
 		} else {
-			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get( $t_page['label'] ) . '</a>';
+			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get_defaulted( $t_page['label'] ) . '</a>';
 		}
 		echo '</li>' . "\n";
 	}
@@ -599,7 +614,7 @@ function print_manage_config_menu( $p_page = '' ) {
 	foreach ( $t_pages as $t_page ) {
 		$t_active =  $t_page['url'] == $p_page ? 'active' : '';
 		echo '<a class="btn btn-sm btn-white btn-primary ' . $t_active . '" href="'. helper_mantis_url( $t_page['url'] ) .'">' . "\n";
-		echo lang_get( $t_page['label'] );
+		echo lang_get_defaulted( $t_page['label'] );
 		echo '</a>' . "\n";
 	}
 
@@ -754,8 +769,7 @@ function print_summary_menu( $p_page = '' ) {
 	foreach ( $t_menu_options as $t_menu_item ) {
 		echo '<li>', $t_menu_item, '</li>';
 	}
-	echo '</ul>';
-	echo '</div>';
+	echo '</ul>' . "\n";
 }
 
 /**
