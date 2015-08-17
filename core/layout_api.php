@@ -228,13 +228,18 @@ function layout_head_meta() {
  */
 function layout_head_css() {
 	# bootstrap & fontawesome
-	html_css_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' );
-	html_css_cdn_link( '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_css_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/css/bootstrap.min.css' );
+		html_css_cdn_link( '//maxcdn.bootstrapcdn.com/font-awesome/' . FA_VERSION . '/css/font-awesome.min.css' );
+	} else {
+		html_css_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.css' );
+		html_css_link( 'font-awesome-' . FA_VERSION . '.min.css' );
+	}
 
 	# page specific plugin styles
 
 	# theme text fonts
-	echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />' . "\n";
+	html_css_cdn_link( '//fonts.googleapis.com/css?family=Open+Sans');
 	
 	# theme styles -->
 	html_css_link( 'ace.min.css' );
@@ -277,7 +282,11 @@ function layout_head_javascript() {
  */
 function layout_body_javascript() {
 	# bootstrap
-	html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js' );
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/js/bootstrap.min.js' );
+	} else {
+		html_javascript_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.js' );
+	}
 
 	# theme scripts
 	html_javascript_link( 'ace-extra.min.js' );

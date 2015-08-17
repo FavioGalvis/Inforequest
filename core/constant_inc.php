@@ -591,6 +591,8 @@ define( 'FTP', 1 );                                 # DISK
 define( 'ERROR_FTP_CONNECT_ERROR', 16 );            # N/A
 
 # JQuery and JQuery UI
-define ( 'JQUERY_VERSION', '1.11.3' );
+define ( 'JQUERY_VERSION', '2.1.4' );
 define ( 'JQUERY_UI_VERSION', '1.11.4' );
+define ( 'BOOTSTRAP_VERSION', '3.3.5' );
+define ( 'FA_VERSION', '4.4.0' );
 
