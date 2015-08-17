@@ -202,7 +202,12 @@ function require_css( $p_stylesheet_path ) {
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
-	html_css_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css' );
+
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_css_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.css' );
+	} else {
+		html_css_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.css' );
+	}
 	html_css_link( 'common_config.php' );
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
@@ -283,8 +288,15 @@ function html_head_javascript() {
 	global $g_scripts_included;
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' );
-	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' );
+
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY__UI_VERSION . '/jquery-ui.min.js' );
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
