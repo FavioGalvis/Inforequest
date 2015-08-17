@@ -35,7 +35,6 @@ tr.bugnote .bugnote-note { background-color: #e8e8e8; color: #000000; width: 75%
 	border-bottom: 1px dotted black;
 }
 
-<<<<<<< HEAD
 .avatar
 {
 	float: left;
@@ -96,8 +95,6 @@ div.error-type { font-weight: bold; }
 div.error-description { color: red; text-align: center; margin: 1.5em; }
 div.error-info { text-align: center; margin: 1em; }
 
-=======
->>>>>>> a50eae08a3bf371bd776f0b0b08a37338edacf11
 .bug-attachments {
 	margin: 0;
 	padding: 0;
@@ -133,7 +130,6 @@ div.error-info { text-align: center; margin: 1em; }
 
 /* manage_config_* colors */
 .color-global		{ background-color: LightBlue; }
-<<<<<<< HEAD
 .color-project		{ background-color: LightGreen; }
 
 div.width100 { width: 100%; }
@@ -169,6 +165,4 @@ div.timeline * div.timestamp { font-size: x-small; color: gray; }
 
 /* timeline action */
 div.timeline * div.action { padding-top: 3px; }
-=======
-.color-project		{ background-color: LightGreen; }
->>>>>>> a50eae08a3bf371bd776f0b0b08a37338edacf11
+
