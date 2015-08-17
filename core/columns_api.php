@@ -638,7 +638,7 @@ function print_column_title_view_state( $p_sort, $p_dir, $p_columns_target = COL
 	global $t_icon_path;
 	echo '<th class="column-view-state">';
 	$t_view_state_text = lang_get( 'view_status' );
-	$t_view_state_icon = '<img src="' . $t_icon_path . 'protected.gif" alt="' . $t_view_state_text . '" title="' . $t_view_state_text . '" />';
+	$t_view_state_icon = '<i class="ace-icon fa fa-lock"></i>&nbsp;';
 	print_view_bug_sort_link( $t_view_state_icon, 'view_state', $p_sort, $p_dir, $p_columns_target );
 	print_sort_icon( $p_dir, $p_sort, 'view_state' );
 	echo '</th>';
@@ -1055,9 +1055,8 @@ function print_column_edit( BugData $p_bug, $p_columns_target = COLUMNS_TARGET_V
 
 	if( !bug_is_readonly( $p_bug->id ) && access_has_bug_level( config_get( 'update_bug_threshold' ), $p_bug->id ) ) {
 		echo '<a href="' . string_get_bug_update_url( $p_bug->id ) . '">';
-		echo '<img width="16" height="16" src="' . $t_icon_path . 'update.png';
-		echo '" alt="' . lang_get( 'update_bug_button' ) . '"';
-		echo ' title="' . lang_get( 'update_bug_button' ) . '" /></a>';
+		echo '<i class="fa fa-pencil blue"';
+		echo ' title="' . lang_get( 'update_bug_button' ) . '" ></i></a>';
 	} else {
 		echo '&#160;';
 	}
@@ -1481,7 +1480,7 @@ function print_column_view_state( BugData $p_bug, $p_columns_target = COLUMNS_TA
 
 	if( VS_PRIVATE == $p_bug->view_state ) {
 		$t_view_state_text = lang_get( 'private' );
-		echo '<img src="' . $t_icon_path . 'protected.gif" alt="' . $t_view_state_text . '" title="' . $t_view_state_text . '" />';
+		echo '<i class="ace-icon fa fa-lock"></i>&nbsp;';
 	} else {
 		echo '&#160;';
 	}

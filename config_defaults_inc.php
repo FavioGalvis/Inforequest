@@ -1154,12 +1154,16 @@ $g_normal_date_format = 'Y-m-d H:i';
 $g_complete_date_format = 'Y-m-d H:i T';
 
 /**
- * jscalendar date format string
- * go to http://www.php.net/manual/en/function.date.php
- * for detailed instructions on date formatting
+ * jquery-ui datepicker date format string
  * @global string $g_calendar_js_date_format
  */
-$g_calendar_js_date_format = '\%Y-\%m-\%d \%H:\%M';
+$g_calendar_js_date_format = 'yy-mm-dd';
+
+/**
+ * jquery-ui datepicker time addon time format string
+ * @global string $g_calendar_js_date_format
+ */
+$g_calendar_js_time_format = 'HH:mm';
 
 /**
  * jscalendar date format string
