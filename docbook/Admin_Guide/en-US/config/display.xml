@@ -131,15 +131,6 @@
 			</listitem>
 		</varlistentry>
 		<varlistentry>
-			<term>$g_status_legend_position</term>
-			<listitem>
-				<para>Specifies the position of the status colour legend, can be:
-					STATUS_LEGEND_POSITION_TOP or STATUS_LEGEND_POSITION_BOTTOM.
-					Default is STATUS_LEGEND_POSITION_BOTTOM.
-				</para>
-			</listitem>
-		</varlistentry>
-		<varlistentry>
 			<term>$g_show_product_version</term>
 			<listitem>
 				<para>This controls display of the product version in the

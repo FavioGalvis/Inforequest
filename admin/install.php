@@ -439,7 +439,7 @@ if( 2 == $t_install_state ) {
 		$t_version_info = @$g_db->ServerInfo();
 	} else {
 		print_test_result( BAD, true, 'Does administrative user have access to the database? ( ' . db_error_msg() . ' )' );
-                $t_version_info = null;
+		$t_version_info = null;
 	}
 	?>
 </tr>

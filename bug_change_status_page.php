@@ -394,6 +394,7 @@ if( ( $f_new_status >= $t_resolved ) ) {
 
 </tbody>
 </table>
+<input type="hidden" name="action_type" value="<?php echo $f_change_type; ?>" />
 
 </div>
 </div>

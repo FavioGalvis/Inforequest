@@ -1683,6 +1683,13 @@ $g_allow_file_upload = ON;
 $g_file_upload_method = DATABASE;
 
 /**
+ * Use File dropzone: enable drag and drop into a drop zone functionality for
+ * file upload fields
+ * @global integer $g_enable_file_dropzone
+ */
+$g_use_file_dropzone = ON;
+
+/**
  * When using DISK for storing uploaded files, this setting control
  * the access permissions they will have on the web server: with the default
  * value (0400) files will be read-only, and accessible only by the user
@@ -2689,6 +2696,10 @@ $g_update_bugnote_threshold = DEVELOPER;
 
 /**
  * Threshold needed to view project documentation
+ * Note: setting this to ANYBODY will let any user download attachments
+ * from private projects, regardless of their being a member of it.
+ * @see $g_enable_project_documentation
+ * @see $g_upload_project_file_threshold
  * @global integer $g_view_proj_doc_threshold
  */
 $g_view_proj_doc_threshold = VIEWER;

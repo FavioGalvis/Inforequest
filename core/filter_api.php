@@ -963,9 +963,9 @@ function filter_get_query_sort_data( array &$p_filter, $p_show_sticky, array $p_
 				$t_def = custom_field_get_definition( $t_custom_field_id );
 				$t_value_field = ( $t_def['type'] == CUSTOM_FIELD_TYPE_TEXTAREA ? 'text' : 'value' );
 				$c_cf_alias = 'custom_field_' . $t_custom_field_id;
-				
-                                # Distinguish filter table aliases from sort table aliases (see #19670)
-                                $t_cf_table_alias = 'cf_sort_' . $t_custom_field_id;
+
+				# Distinguish filter table aliases from sort table aliases (see #19670)
+				$t_cf_table_alias = 'cf_sort_' . $t_custom_field_id;
 				$t_cf_select = $t_cf_table_alias . '.' . $t_value_field . ' ' . $c_cf_alias;
 
 				# check to be sure this field wasn't already added to the query.
@@ -3479,7 +3479,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 	echo '<label>', lang_get( 'search' ) . '&#160', '</label>';
 	echo '<input type="text" class="input-sm" size="16" name="', FILTER_PROPERTY_SEARCH, '" value="', string_attribute( $t_filter[FILTER_PROPERTY_SEARCH] ), '" />';
 	?>
-	<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" name="filter" value="<?php echo lang_get( 'filter_button' )?>" />
+	<input type="submit" class="btn btn-primary btn-sm btn-white btn-round no-float" name="filter" value="<?php echo lang_get( 'filter_button' )?>" />
 	</div>
 	<?php
 
@@ -3520,7 +3520,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 				}
 				?>
 			</select>
-			<input type="submit" name="switch_to_query_button" class="btn btn-primary btn-white btn-sm btn-round"
+			<input type="submit" name="switch_to_query_button" class="btn btn-primary btn-white btn-sm btn-round no-float"
 				value="<?php echo lang_get( 'use_query' )?>" />
 		</form>
 	<?php
