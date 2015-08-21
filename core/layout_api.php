@@ -281,7 +281,7 @@ function layout_body_javascript() {
 	if ( config_get( 'cdn_enabled' ) == ON ) {
 		html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/js/bootstrap.min.js' );
 		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
-		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY__UI_VERSION . '/jquery-ui.min.js' );
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js' );
 	} else {
 		html_javascript_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.js' );
 		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
