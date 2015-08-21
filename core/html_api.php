@@ -19,7 +19,6 @@
  *
  * These functions control the HTML output of each page.
  *
- *
  * @package CoreAPI
  * @subpackage HTMLAPI
  * @copyright Copyright 2000 - 2002  Kenzaburo Ito - kenito@300baud.org
@@ -281,29 +280,6 @@ function require_js( $p_script_path ) {
 }
 
 /**
- * Javascript...
- * @return void
- */
-function html_head_javascript() {
-	global $g_scripts_included;
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-
-	if ( config_get( 'cdn_enabled' ) == ON ) {
-		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
-		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY__UI_VERSION . '/jquery-ui.min.js' );
-	} else {
-		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
-		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
-	}
-
-	html_javascript_link( 'common.js' );
-	foreach ( $g_scripts_included as $t_script_path ) {
-		html_javascript_link( $t_script_path );
-	}
-}
-
-/**
  * End the <head> section
  * @return void
  */
@@ -374,6 +350,10 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
  * @return void
  */
 function html_body_end() {
+	event_signal( 'EVENT_LAYOUT_BODY_END' );
+
+	echo '</div>', "\n";
+
 	echo '</body>', "\n";
 }
 
@@ -1400,7 +1380,6 @@ function html_page_top1( $p_page_title = null ) {
     # Advertise the availability of the browser search plug-ins.
     echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
     echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
-    html_head_javascript();
 }
 /**
  * Print the part of the page that comes after meta tags, but before the actual page content
