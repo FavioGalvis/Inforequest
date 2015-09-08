@@ -3432,7 +3432,13 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		<!-- Match Type -->
 		<tr>
-			<td class="small category"><a href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>" id="match_type_filter"><?php echo lang_get( 'filter_match_type' )?>:</a></td>
+			<td class="small category">
+				<a id="match_type_filter"
+					href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>"
+					<?php echo $t_dynamic_filter_expander_class; ?>>
+					<?php echo lang_get( 'filter_match_type' )?>:
+				</a>
+			</td>
 			<td class="small" id="match_type_filter_target">
 			<?php
 				switch( $t_filter[FILTER_PROPERTY_MATCH_TYPE] ) {
@@ -3451,7 +3457,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			<td class="small category">
 				<a id="highlight_changed_filter"
 					href="<?php echo $t_filters_url . FILTER_PROPERTY_HIGHLIGHT_CHANGED; ?>"
-					<?php #echo $t_dynamic_filter_expander_class; ?>>
+					<?php echo $t_dynamic_filter_expander_class; ?>>
 					<?php echo lang_get( 'changed_label' )?>
 				</a>
 			</td>
