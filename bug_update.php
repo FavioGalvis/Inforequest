@@ -276,6 +276,7 @@ $t_custom_fields_to_set = array();
 foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 	$t_cf_def = custom_field_get_definition( $t_cf_id );
 
+	# If the custom field is not set and is required, then complain!
 	if( !gpc_isset_custom_field( $t_cf_id, $t_cf_def['type'] ) ) {
 		if( $t_cf_def[$t_cf_require_check] &&
 			$f_update_type == BUG_UPDATE_TYPE_NORMAL &&
@@ -284,13 +285,12 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 			# no value was given by the user.
 			error_parameters( lang_get_defaulted( custom_field_get_field( $t_cf_id, 'name' ) ) );
 			trigger_error( ERROR_EMPTY_FIELD, ERROR );
-		} else {
-			# The custom field isn't compulsory and the user did
-			# not supply a value. Therefore we can just ignore this
-			# custom field completely (ie. don't attempt to update
-			# the field).
-			continue;
 		}
+	}
+
+	# Otherwise, if not present then skip it.
+	if ( !custom_field_is_present( $t_cf_id ) ) {
+		continue;
 	}
 
 	if( !custom_field_has_write_access( $t_cf_id, $f_bug_id ) ) {

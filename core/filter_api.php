@@ -1780,7 +1780,7 @@ function filter_get_bug_rows( &$p_page_number, &$p_per_page, &$p_page_count, &$p
 	# tags
 	$c_tag_string = trim( $t_filter[FILTER_PROPERTY_TAG_STRING] );
 	$c_tag_select = trim( $t_filter[FILTER_PROPERTY_TAG_SELECT] );
-	if( is_blank( $c_tag_string ) && !is_blank( $c_tag_select ) && $c_tag_select != 0 ) {
+	if( is_blank( $c_tag_string ) && !is_blank( $c_tag_select ) && $c_tag_select != 0 && tag_exists( $c_tag_select ) ) {
 		$t_tag = tag_get( $c_tag_select );
 		$c_tag_string = $t_tag['name'];
 	}
@@ -3432,7 +3432,13 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		<!-- Match Type -->
 		<tr>
-			<td class="small category"><a href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>" id="match_type_filter"><?php echo lang_get( 'filter_match_type' )?>:</a></td>
+			<td class="small category">
+				<a id="match_type_filter"
+					href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>"
+					<?php echo $t_dynamic_filter_expander_class; ?>>
+					<?php echo lang_get( 'filter_match_type' )?>:
+				</a>
+			</td>
 			<td class="small" id="match_type_filter_target">
 			<?php
 				switch( $t_filter[FILTER_PROPERTY_MATCH_TYPE] ) {
@@ -3451,7 +3457,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			<td class="small category">
 				<a id="highlight_changed_filter"
 					href="<?php echo $t_filters_url . FILTER_PROPERTY_HIGHLIGHT_CHANGED; ?>"
-					<?php #echo $t_dynamic_filter_expander_class; ?>>
+					<?php echo $t_dynamic_filter_expander_class; ?>>
 					<?php echo lang_get( 'changed_label' )?>
 				</a>
 			</td>

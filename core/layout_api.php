@@ -89,8 +89,9 @@ function layout_page_header_begin( $p_page_title = null ) {
 	# Advertise the availability of the browser search plug-ins.
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
+	
+	layout_head_javascript();
 
-	html_head_javascript();
 }
 
 /**
@@ -261,39 +262,53 @@ function layout_head_css() {
 	echo "\n";
 }
 
-
 /**
  * Print javascript directives for the head section of the page
  * @return null
  */
 function layout_head_javascript() {
+	global $g_scripts_included;
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
+
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js' );
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
 	# HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 	echo '<!--[if lte IE 8]>';
 	html_javascript_link( 'html5shiv.min.js' );
 	html_javascript_link( 'respond.min.js' );
 	echo '<![endif]-->';
 	echo "\n";
-}
 
+	html_javascript_link( 'common.js' );
+	html_javascript_link( 'chosen.js' );
+
+	foreach ( $g_scripts_included as $t_script_path ) {
+		html_javascript_link( $t_script_path );
+	}	
+}
 
 /**
  * Print javascript directives before the closing of the page body element
  * @return null
  */
 function layout_body_javascript() {
-	# bootstrap
 	if ( config_get( 'cdn_enabled' ) == ON ) {
 		html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/js/bootstrap.min.js' );
 	} else {
 		html_javascript_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.js' );
 	}
-
 	# theme scripts
 	html_javascript_link( 'ace-extra.min.js' );
 	html_javascript_link( 'ace-elements.min.js' );
 	html_javascript_link( 'ace.min.js' );
 }
-
 
 /**
  * Print opening markup for login/signup/register pages
@@ -326,7 +341,7 @@ function layout_login_page_begin() {
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true) . '" />' . "\n";
 
-	html_head_javascript();
+	layout_head_javascript();
 
 	event_signal( 'EVENT_LAYOUT_RESOURCES' );
 	html_head_end();
