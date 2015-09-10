@@ -434,6 +434,22 @@ function require_js( $p_script_path ) {
 }
 
 /**
+ * Javascript...
+ * @return void
+ */
+function html_head_javascript() {
+	global $g_scripts_included;
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
+	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' );
+	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' );
+	html_javascript_link( 'common.js' );
+	foreach ( $g_scripts_included as $t_script_path ) {
+		html_javascript_link( $t_script_path );
+	}
+}
+
+/**
  * End the <head> section
  * @return void
  */
