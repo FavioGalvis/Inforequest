@@ -53,8 +53,7 @@ if( !access_has_bug_level( $t_access_level_needed, $f_bug_id ) ) {
 ?>
 
     <div class="col-md-12 col-xs-12">
-        <a id="history"></a>
-        <div class="space-10"></div>
+          <div class="space-10"></div>
 
 <?php
 	$t_collapse_block = is_collapsed( 'history' );

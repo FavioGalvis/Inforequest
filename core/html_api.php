@@ -31,6 +31,7 @@
  *     html_title
  *     html_css
  *     html_rss_link
+ *     html_head_javascript
  *   (html_meta_redirect)
  *   html_page_top2
  *     html_page_top2a
@@ -207,6 +208,8 @@ function html_page_top1( $p_page_title = null ) {
 	# Advertise the availability of the browser search plug-ins.
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
+
+	html_head_javascript();
 }
 
 /**
@@ -292,7 +295,7 @@ function html_javascript_cdn_link( $p_url ) {
 }
 
 /**
- * Print the document type and the opening <html> tag
+ * (1) Print the document type and the opening <html> tag
  * @return void
  */
 function html_begin() {
@@ -301,7 +304,7 @@ function html_begin() {
 }
 
 /**
- * Begin the <head> section
+ * (2) Begin the <head> section
  * @return void
  */
 function html_head_begin() {
@@ -309,7 +312,7 @@ function html_head_begin() {
 }
 
 /**
- * Print the content-type
+ * (3) Print the content-type
  * @return void
  */
 function html_content_type() {
@@ -317,7 +320,7 @@ function html_content_type() {
 }
 
 /**
- * Print the window title
+ * (4) Print the window title
  * @param string $p_page_title Window title.
  * @return void
  */
@@ -348,15 +351,15 @@ function require_css( $p_stylesheet_path ) {
 }
 
 /**
- * Print the link to include the CSS file
+ * (5) Print the link to include the CSS file
  * @return void
  */
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
 
-	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		echo '<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.css">' . "\n";
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_css_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.min.css' );
 	} else {
 		html_css_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.css' );
 	}
@@ -377,7 +380,7 @@ function html_css() {
  * @return void
  */
 function html_css_link( $p_filename ) {
-	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), true ), '" />' . "\n";
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), false ), '" />' . "\n";
 }
 
 /**
@@ -390,7 +393,7 @@ function html_css_cdn_link( $p_url ) {
 }
 
 /**
- * Print an HTML meta tag to redirect to another page
+ * (6) Print an HTML meta tag to redirect to another page
  * This function is optional and may be called by pages that need a redirect.
  * $p_time is the number of seconds to wait before redirecting.
  * If we have handled any errors on this page return false and don't redirect.
@@ -434,15 +437,23 @@ function require_js( $p_script_path ) {
 }
 
 /**
- * Javascript...
+ * (6a) Javascript...
  * @return void
  */
 function html_head_javascript() {
 	global $g_scripts_included;
+
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' );
-	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' );
+
+	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js"></script>' . "\n";
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js"></script>' . "\n";
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
@@ -450,7 +461,7 @@ function html_head_javascript() {
 }
 
 /**
- * End the <head> section
+ * (7) End the <head> section
  * @return void
  */
 function html_head_end() {
@@ -458,7 +469,7 @@ function html_head_end() {
 }
 
 /**
- * Begin the <body> section
+ * (8) Begin the <body> section
  * @return void
  */
 function html_body_begin() {
@@ -476,7 +487,7 @@ function html_body_begin() {
 }
 
 /**
- * Print a user-defined banner at the top of the page if there is one.
+ * (9) Print a user-defined banner at the top of the page if there is one.
  * @return void
  */
 function html_top_banner() {
@@ -514,7 +525,7 @@ function html_top_banner() {
 }
 
 /**
- * Print the user's account information
+ * (10) Print the user's account information
  * Also print the select box where users can switch projects
  * @return void
  */
@@ -609,7 +620,7 @@ function html_login_info() {
 }
 
 /**
- * Print a user-defined banner at the bottom of the page if there is one.
+ * (11) Print a user-defined banner at the bottom of the page if there is one.
  * @return void
  */
 function html_bottom_banner() {
@@ -641,7 +652,15 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
 }
 
 /**
- * Print the page footer information
+ * Checks if the current page load was triggered by auto-refresh or real activity
+ * @return bool true: auto-refresh, false: triggered by user.
+ */
+function html_is_auto_refresh() {
+	return gpc_get_bool( 'refresh' );
+}
+
+/**
+ * (13) Print the page footer information
  * @return void
  */
 function html_footer() {
@@ -759,29 +778,15 @@ function html_footer() {
 }
 
 /**
- * End the <body> section
+ * (14) End the <body> section
  * @return void
  */
 function html_body_end() {
-	global $g_scripts_included;
 
+	# Should code need to be added to this function in the future, it should be
+	# placed *above* this event, which needs to be the last thing to occur
+	# before the actual body ends (see #20084)
 	event_signal( 'EVENT_LAYOUT_BODY_END' );
-
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-
-	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js"></script>' . "\n";
-		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js"></script>' . "\n";
-	} else {
-		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
-		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
-	}
-
-	html_javascript_link( 'common.js' );
-	foreach ( $g_scripts_included as $t_script_path ) {
-		html_javascript_link( $t_script_path );
-	}
 
 	echo '</div>', "\n";
 
@@ -789,7 +794,7 @@ function html_body_end() {
 }
 
 /**
- * Print the closing <html> tag
+ * (15) Print the closing <html> tag
  * @return void
  */
 function html_end() {
@@ -1190,10 +1195,98 @@ function print_summary_menu( $p_page = '' ) {
 
 	# Plugins menu items - these are cooked links
 	foreach ( $t_menu_options as $t_menu_item ) {
-		echo '<li>' . $t_menu_item . '</li>';
+		echo '<li>', $t_menu_item, '</li>';
+	}
+	echo '</ul>' . "\n";
+}
+
+/**
+ * Print the color legend for the status colors at the requested position
+ * @param int  $p_display_position   STATUS_LEGEND_POSITION_TOP or STATUS_LEGEND_POSITION_BOTTOM
+ * @param bool $p_restrict_by_filter If true, only display status visible in current filter
+ * @return void
+ */
+function html_status_legend( $p_display_position, $p_restrict_by_filter = false ) {
+
+	if( $p_restrict_by_filter ) {
+		# Don't show the legend if only one status is selected by the current filter
+		$t_current_filter = current_user_get_bug_filter();
+		if( $t_current_filter === false ) {
+			$t_current_filter = filter_get_default();
+		}
+		$t_simple_filter = $t_current_filter['_view_type'] == 'simple';
+		if( $t_simple_filter ) {
+			if( !filter_field_is_any( $t_current_filter[FILTER_PROPERTY_STATUS][0] ) ) {
+				return;
+			}
+		}
 	}
 
-	echo '</ul>' . "\n";
+	$t_status_array = MantisEnum::getAssocArrayIndexedByValues( config_get( 'status_enum_string' ) );
+	$t_status_names = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+
+	# read through the list and eliminate unused ones for the selected project
+	# assumes that all status are are in the enum array
+	$t_workflow = config_get( 'status_enum_workflow' );
+	if( !empty( $t_workflow ) ) {
+		foreach( $t_status_array as $t_status => $t_name ) {
+			if( !isset( $t_workflow[$t_status] ) ) {
+
+				# drop elements that are not in the workflow
+				unset( $t_status_array[$t_status] );
+			}
+		}
+	}
+
+	if( $p_restrict_by_filter ) {
+		# Remove status values that won't appear as a result of the current filter
+		foreach( $t_status_array as $t_status => $t_name ) {
+			if( $t_simple_filter ) {
+				if( !filter_field_is_none( $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) &&
+					$t_status >= $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) {
+					unset( $t_status_array[$t_status] );
+				}
+			} else {
+				if( !in_array( META_FILTER_ANY, $t_current_filter[FILTER_PROPERTY_STATUS] ) &&
+					!in_array( $t_status, $t_current_filter[FILTER_PROPERTY_STATUS] ) ) {
+					unset( $t_status_array[$t_status] );
+				}
+			}
+		}
+
+		# If there aren't at least two statuses showable by the current filter,
+		# don't draw the status bar
+		if( count( $t_status_array ) <= 1 ) {
+			return;
+		}
+	}
+
+	# Display the legend
+	$t_legend_position = config_get( 'status_legend_position' ) & $p_display_position;
+
+	if( STATUS_LEGEND_POSITION_NONE != $t_legend_position ) {
+		echo '<br />';
+		echo '<table class="status-legend width100" cellspacing="1">';
+		echo '<tr>';
+
+		# draw the status bar
+		$t_status_enum_string = config_get( 'status_enum_string' );
+		foreach( $t_status_array as $t_status => $t_name ) {
+			$t_val = isset( $t_status_names[$t_status] ) ? $t_status_names[$t_status] : $t_status_array[$t_status];
+			$t_status_label = MantisEnum::getLabel( $t_status_enum_string, $t_status );
+
+			echo '<td class="small-caption ' . $t_status_label . '-color">' . $t_val . '</td>';
+		}
+
+		echo '</tr>';
+		echo '</table>';
+		if( ON == config_get( 'status_percentage_legend' ) ) {
+			html_status_percentage_legend();
+		}
+	}
+	if( STATUS_LEGEND_POSITION_TOP == $t_legend_position ) {
+		echo '<br />';
+	}
 }
 
 /**
@@ -1238,6 +1331,24 @@ function print_admin_menu_bar( $p_page ) {
 	echo '</li>' . "\n";
 
 	echo '</ul>' . "\n";
+}
+
+/**
+ * Print required js for datetimepicker
+ * @return void
+ * @access public
+ */
+function print_datetimepicker_js() {
+	require_js( 'jquery-ui-timepicker.min.js' );
+	$t_current_lang = lang_get_current();
+	$t_fallback_lang = config_get( 'fallback_language' );
+	if( $t_fallback_lang !== $t_current_lang &&
+		file_exists( $g_absolute_path . 'javascript' . DIRECTORY_SEPARATOR . 'jquery-ui-timepicker-' . $t_current_lang . '.js' ) ) {
+		require_js( 'jquery-ui-timepicker-' . $t_current_lang . '.js' );
+	} else {
+		require_js( 'jquery-ui-timepicker-' . $t_fallback_lang . '.js' );
+	}
+	require_css( 'jquery-ui-timepicker.min.css' );
 }
 
 /**

@@ -97,10 +97,7 @@ if( $f_new_status == $t_reopen && $f_change_type == BUG_UPDATE_TYPE_REOPEN ) {
 
 $t_can_update_due_date = access_has_bug_level( config_get( 'due_date_update_threshold' ), $f_bug_id );
 if( $t_can_update_due_date ) {
-	require_js( 'jscalendar/calendar.js' );
-	require_js( 'jscalendar/lang/calendar-en.js' );
-	require_js( 'jscalendar/calendar-setup.js' );
-	require_css( 'calendar-blue.css' );
+	print_datetimepicker_js();
 }
 
 # get new issue handler if set, otherwise default to original handler
@@ -250,7 +247,8 @@ if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get(
 					<?php print_documentation_link( 'due_date' ) ?>
 				</th>
 				<td>
-					<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetime" size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+					<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetimepicker" size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+					<script type="text/javascript">$( ".datetimepicker" ).datetimepicker({hourMin: 10, hourMax: 16});</script>
 				</td>
 			</tr>
 <?php } ?>
@@ -394,12 +392,13 @@ if( ( $f_new_status >= $t_resolved ) ) {
 
 </tbody>
 </table>
+<!-- Submit Button -->
+<div class="widget-toolbox padding-8 clearfix">
+	<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
+</div>
 <input type="hidden" name="action_type" value="<?php echo $f_change_type; ?>" />
 
 </div>
-</div>
-<div class="widget-toolbox padding-8 clearfix">
-	<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
 </div>
 </div>
 </div>

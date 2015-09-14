@@ -986,6 +986,17 @@ $g_excel_columns = array (
 $g_show_bug_project_links = ON;
 
 /**
+ * Position of the status color legend
+ * Allowed values are:
+ * - STATUS_LEGEND_POSITION_NONE - do not display the legend at all
+ * - STATUS_LEGEND_POSITION_TOP
+ * - STATUS_LEGEND_POSITION_BOTTOM (default)
+ * - STATUS_LEGEND_POSITION_BOTH
+ * @global integer $g_status_legend_position
+ */
+$g_status_legend_position = STATUS_LEGEND_POSITION_BOTTOM;
+
+/**
  * Show a legend with percentage of bug status
  * x% of all bugs are new, y% of all bugs are assigned and so on.
  * If set to ON it will printed below the status colour legend.
@@ -1143,12 +1154,16 @@ $g_normal_date_format = 'Y-m-d H:i';
 $g_complete_date_format = 'Y-m-d H:i T';
 
 /**
- * jscalendar date format string
- * go to http://www.php.net/manual/en/function.date.php
- * for detailed instructions on date formatting
+ * jquery-ui datepicker date format string
  * @global string $g_calendar_js_date_format
  */
-$g_calendar_js_date_format = '\%Y-\%m-\%d \%H:\%M';
+$g_calendar_js_date_format = 'yy-mm-dd';
+
+/**
+ * jquery-ui datepicker time addon time format string
+ * @global string $g_calendar_js_date_format
+ */
+$g_calendar_js_time_format = 'HH:mm';
 
 /**
  * jscalendar date format string

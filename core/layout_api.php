@@ -82,14 +82,16 @@ function layout_page_header_begin( $p_page_title = null ) {
 
 	$t_favicon_image = config_get( 'favicon_image' );
 	if( !is_blank( $t_favicon_image ) ) {
-		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '" type="image/x-icon" />', "\n";
+		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '.ico" type="image/vnd.microsoft.icon" />', "\n";
+		echo "\t", '<link rel="icon" href="',          helper_mantis_url( $t_favicon_image ), '.png" type="image/png" />',                "\n";
 	}
 
 	# Advertise the availability of the browser search plug-ins.
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
+	
+	layout_head_javascript();
 
-	html_head_javascript();
 }
 
 /**
@@ -227,14 +229,19 @@ function layout_head_meta() {
  */
 function layout_head_css() {
 	# bootstrap & fontawesome
-	html_css_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' );
-	html_css_cdn_link( '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_css_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/css/bootstrap.min.css' );
+		html_css_cdn_link( '//maxcdn.bootstrapcdn.com/font-awesome/' . FA_VERSION . '/css/font-awesome.min.css' );
+	} else {
+		html_css_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.css' );
+		html_css_link( 'font-awesome-' . FA_VERSION . '.min.css' );
+	}
 
 	# page specific plugin styles
 
 	# theme text fonts
-	html_css_link( 'ace-fonts.css' );
-
+	html_css_cdn_link( '//fonts.googleapis.com/css?family=Open+Sans');
+	
 	# theme styles -->
 	html_css_link( 'ace.min.css' );
 	html_css_link( 'ace-mantis.css' );
@@ -255,35 +262,53 @@ function layout_head_css() {
 	echo "\n";
 }
 
-
 /**
  * Print javascript directives for the head section of the page
  * @return null
  */
 function layout_head_javascript() {
+	global $g_scripts_included;
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
+
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
+		html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js' );
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
 	# HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 	echo '<!--[if lte IE 8]>';
 	html_javascript_link( 'html5shiv.min.js' );
 	html_javascript_link( 'respond.min.js' );
 	echo '<![endif]-->';
 	echo "\n";
-}
 
+	html_javascript_link( 'common.js' );
+	html_javascript_link( 'chosen.js' );
+
+	foreach ( $g_scripts_included as $t_script_path ) {
+		html_javascript_link( $t_script_path );
+	}	
+}
 
 /**
  * Print javascript directives before the closing of the page body element
  * @return null
  */
 function layout_body_javascript() {
-	# bootstrap
-	html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js' );
-
+	if ( config_get( 'cdn_enabled' ) == ON ) {
+		html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/js/bootstrap.min.js' );
+	} else {
+		html_javascript_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.js' );
+	}
 	# theme scripts
 	html_javascript_link( 'ace-extra.min.js' );
 	html_javascript_link( 'ace-elements.min.js' );
 	html_javascript_link( 'ace.min.js' );
 }
-
 
 /**
  * Print opening markup for login/signup/register pages
@@ -307,14 +332,16 @@ function layout_login_page_begin() {
 
 	$t_favicon_image = config_get( 'favicon_image' );
 	if( !is_blank( $t_favicon_image ) ) {
-		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '" type="image/x-icon" />', "\n";
+		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '.ico" type=image/vnd.microsoft.icon" />', "\n";
+		echo "\t", '<link rel="icon" href="',          helper_mantis_url( $t_favicon_image ), '.png" type="image/png" />',               "\n";
+
 	}
 
 	# Advertise the availability of the browser search plug-ins.
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true) . '" />' . "\n";
 
-	html_head_javascript();
+	layout_head_javascript();
 
 	event_signal( 'EVENT_LAYOUT_RESOURCES' );
 	html_head_end();
@@ -388,14 +415,14 @@ function layout_navbar() {
 
 	# mobile view
 	echo '<div class="hidden-sm hidden-md hidden-lg">';
-	echo '<nav class="navbar-menu pull-left navbar-collapse collapse" role="navigation" style="height: auto;">';
+	echo '<nav class="navbar-menu pull-left navbar-collapse collapse" style="height: auto;">';
 	echo '<ul class="nav navbar-nav">';
 	if (auth_is_user_authenticated()) {
 		layout_navbar_user_menu(false);
 		layout_navbar_projects_menu();
 	}
 	echo '</ul>';
-	echo '</div>';
+	echo '</nav>';
 	echo '</div>';
 
 	echo '</div>';
@@ -881,7 +908,7 @@ function layout_page_content_end() {
  * @return null
  */
 function layout_breadcrumbs() {
-	$t_username = current_user_get_field( 'username' );
+	$t_username = user_get_realname( user_get_id_by_name( current_user_get_field( 'username' ) ) );
 	$t_protected = current_user_get_field( 'protected' );
 	$t_access_level = get_enum_element( 'access_levels', current_user_get_access_level() );
 
@@ -900,21 +927,21 @@ function layout_breadcrumbs() {
 		echo ' <li><i class="fa fa-user home-icon active"></i> ' . lang_get( 'anonymous' ) . ' </li>' . "\n";
 
 		echo '<div class="btn-group btn-corner">' . "\n";
-		echo '	<button href="' . helper_mantis_url( 'login_page.php?return=' . $t_return_page ) .
-			'" class="btn btn-primary btn-xs">' . lang_get( 'login_link' ) . '</button>' . "\n";
+		echo '	<a href="' . helper_mantis_url( 'login_page.php?return=' . $t_return_page ) .
+			'" class="btn btn-primary btn-xs">' . lang_get( 'login_link' ) . '</a>' . "\n";
 		if( config_get_global( 'allow_signup' ) == ON ) {
-			echo '	<button href="' . helper_mantis_url( 'signup_page.php' ) . '" class="btn btn-primary btn-xs">' .
-				lang_get( 'signup_link' ) . '</button>' . "\n";
+			echo '	<a href="' . helper_mantis_url( 'signup_page.php' ) . '" class="btn btn-primary btn-xs">' .
+				lang_get( 'signup_link' ) . '</a>' . "\n";
 		}
 		echo '</div>' . "\n";
 
 	} else {
 		echo '  <li><i class="fa fa-user home-icon active"></i>';
 		$t_page = ( OFF == $t_protected ) ? 'account_page.php' : 'my_view_page.php';
-		echo '  <a href="' . helper_mantis_url( $t_page ) . '">' . string_html_specialchars( $t_username ) . '</a></li>' .  "\n";
+		echo '  <a href="' . helper_mantis_url( $t_page ) . '">' . string_html_specialchars( $t_username ) . '</a>' .  "\n";
 
 		$t_label = layout_is_rtl() ? 'arrowed-right' : 'arrowed';
-		echo '  <span class="label hidden-xs label-default ' . $t_label . '">' . $t_access_level . '</span>' , "\n";
+		echo '  <span class="label hidden-xs label-default ' . $t_label . '">' . $t_access_level . '</span></li>' , "\n";
 	}
 	echo '</ul>' , "\n";
 

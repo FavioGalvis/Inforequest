@@ -130,7 +130,6 @@ print_doc_menu( 'proj_doc_page.php' );
 	<th><?php echo lang_get( 'filename' ); ?></th>
 	<th><?php echo lang_get( 'description' ); ?></th>
 </tr>
-</thead>
 
 <?php
 $i = 0;
@@ -147,7 +146,7 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 	<td>
 		<span class="floatleft">
 <?php
-	$t_href = '<a href="file_download.php?file_id='.$v_id.'&amp;type=doc">';
+	$t_href = '<a href="file_download.php?file_id=' . $v_id . '&amp;type=doc">';
 	echo $t_href;
 	print_file_icon( $v_filename );
 	echo '</a>&#160;' . $t_href . $v_title . '</a> (' . $v_filesize . lang_get( 'word_separator' ) . lang_get( 'bytes' ) . ')';
@@ -156,21 +155,19 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 			<span class="small">
 <?php
 	if( $v_project_id == ALL_PROJECTS ) {
-		echo lang_get( 'all_projects' ) . '<br/>';
+		echo lang_get( 'all_projects' ) . '<br />';
 	} else if( $v_project_id != $f_project_id ) {
 		$t_project_name = project_get_name( $v_project_id );
-		echo $t_project_name . '<br/>';
+		echo $t_project_name . '<br />';
 	}
 	echo '(' . $v_date_added . ')';
 ?>
 			</span>
 		</span>
-		<span class="floatright">
+		<span class="floatright pull-right">
 <?php
 	if( access_has_project_level( config_get( 'upload_project_file_threshold', null, null, $v_project_id ), $v_project_id ) ) {
-		echo '&#160;';
-		print_form_button( 'proj_doc_edit_page.php?file_id='.$v_id, lang_get( 'edit_link' ) );
-		echo '&#160;';
+		print_form_button( 'proj_doc_edit_page.php?file_id=' . $v_id, lang_get( 'edit_link' ) );
 		print_form_button( 'proj_doc_delete.php?file_id=' . $v_id, lang_get( 'delete_link' ) );
 	}
 ?>

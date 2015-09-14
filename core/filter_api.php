@@ -3431,15 +3431,18 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 		</tr>
 
 		<!-- Match Type -->
-		<tr class="row-1">
-			<td class="small-caption category2">
+
+		<tr>
+			<td class="small category">
 				<a id="match_type_filter"
 					href="<?php echo $t_filters_url . FILTER_PROPERTY_MATCH_TYPE;?>"
 					<?php echo $t_dynamic_filter_expander_class; ?>>
 					<?php echo lang_get( 'filter_match_type' )?>:
 				</a>
 			</td>
-			<td class="small-caption" id="match_type_filter_target">
+
+			<td class="small" id="match_type_filter_target">
+
 			<?php
 				switch( $t_filter[FILTER_PROPERTY_MATCH_TYPE] ) {
 					case FILTER_MATCH_ANY:
@@ -3482,7 +3485,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 	# expanded
 	echo '<div class="form-inline">';
-	echo '<label>', lang_get( 'search' ) . '&#160', '</label>';
+	echo '<label>', lang_get( 'search' ) . '&#160;', '</label>';
 	echo '<input type="text" class="input-sm" size="16" name="', FILTER_PROPERTY_SEARCH, '" value="', string_attribute( $t_filter[FILTER_PROPERTY_SEARCH] ), '" />';
 	?>
 	<input type="submit" class="btn btn-primary btn-sm btn-white btn-round no-float" name="filter" value="<?php echo lang_get( 'filter_button' )?>" />

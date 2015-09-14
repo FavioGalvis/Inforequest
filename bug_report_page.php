@@ -212,10 +212,7 @@ $t_show_attachments = in_array( 'attachments', $t_fields ) && file_allow_bug_upl
 $t_show_view_state = in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
 
 if( $t_show_due_date ) {
-	require_js( 'jscalendar/calendar.js' );
-	require_js( 'jscalendar/lang/calendar-en.js' );
-	require_js( 'jscalendar/calendar-setup.js' );
-	require_css( 'calendar-blue.css' );
+	print_datetimepicker_js();
 }
 
 # don't index bug report page
@@ -370,7 +367,8 @@ if( $t_show_attachments ) {
 			<label for="due_date"><?php print_documentation_link( 'due_date' ) ?></label>
 		</th>
 		<td>
-			<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetime" size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+			<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetimepicker" size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+			<script type="text/javascript">$( ".datetimepicker" ).datetimepicker({ hourMin: 10, hourMax: 16, minDate: 2, maxDate: 60});</script>
 		</td>
 	</tr>
 <?php } ?>
@@ -687,7 +685,7 @@ if( $t_show_attachments ) {
 		</th>
 		<td>
 			<label>
-				<input <?php echo helper_get_tab_index() ?> type="checkbox" class="ace" id="report_stay" name="eport_stay" <?php check_checked( $f_report_stay ) ?> />
+				<input <?php echo helper_get_tab_index() ?> type="checkbox" class="ace" id="report_stay" name="report_stay" <?php check_checked( $f_report_stay ) ?> />
 				<span class="lbl"> <?php echo lang_get( 'check_report_more_bugs' ) ?> </span>
 			</label>
 		</td>

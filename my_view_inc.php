@@ -342,93 +342,93 @@ if( $t_count == 0 ) {
 	echo '<tr><td>&#160;</td></tr>';
 }
 for( $i = 0;$i < $t_count; $i++ ) {
-    $t_bug = $t_rows[$i];
-    
-    $t_summary = string_display_line_links( $t_bug->summary );
-                    $t_last_updated = date( config_get( 'normal_date_format' ), $t_bug->last_updated );
+	$t_bug = $t_rows[$i];
 
-                    # Check for attachments
-                    $t_attachment_count = 0;
-                    # TODO: factor in the allow_view_own_attachments configuration option
-                    # instead of just using a global check.
-                    if( ( file_can_view_bug_attachments( $t_bug->id, null ) ) ) {
-                            $t_attachment_count = file_bug_attachment_count( $t_bug->id );
-                    }
+	$t_summary = string_display_line_links( $t_bug->summary );
+	$t_last_updated = date( config_get( 'normal_date_format' ), $t_bug->last_updated );
 
-                    # grab the project name
-                    $project_name = project_get_field( $t_bug->project_id, 'name' );
+	# Check for attachments
+	$t_attachment_count = 0;
+	# TODO: factor in the allow_view_own_attachments configuration option
+	# instead of just using a global check.
+	if( ( file_can_view_bug_attachments( $t_bug->id, null ) ) ) {
+		$t_attachment_count = file_bug_attachment_count( $t_bug->id );
+	}
 
-                    if( VS_PRIVATE == $t_bug->view_state ) {
-                        $t_bug_class = 'my-buglist-private';
-                    } else {
-                            $t_bug_class = '';
-                    }
-                    ?>
+	# grab the project name
+	$project_name = project_get_field( $t_bug->project_id, 'name' );
 
-            <tr class="my-buglist-bug <?php echo $t_bug_class?>">
-                    <?php
-                    # -- Bug ID and details link + Pencil shortcut --?>
-                    <td class="nowrap width-13 my-buglist-id">
-                            <?php
-                                    print_bug_link( $t_bug->id );
+	if( VS_PRIVATE == $t_bug->view_state ) {
+	    $t_bug_class = 'my-buglist-private';
+	} else {
+		$t_bug_class = '';
+	}
+	?>
 
-                                    echo '<br />';
+<tr class="my-buglist-bug <?php echo $t_bug_class?>">
+	<?php
+	# -- Bug ID and details link + Pencil shortcut --?>
+	<td class="nowrap width-13 my-buglist-id">
+		<?php
+			print_bug_link( $t_bug->id );
 
-                                    # choose color based on status
-                                    $status_label = html_get_status_css_class( $t_bug->status, auth_get_current_user_id(), $t_bug->project_id );
-                                    $t_status = string_attribute( get_enum_element( 'status', bug_get_field( $t_bug->id, 'status' ), $t_bug->project_id ) );
-                                    echo '<i class="fa fa-square-o fa-xlg ' . $status_label . '" title="' . $t_status . '"></i> ';
+			echo '<br />';
 
-                                    if( !bug_is_readonly( $t_bug->id ) && access_has_bug_level( $t_update_bug_threshold, $t_bug->id ) ) {
-                                            echo '<a class="edit" href="' . string_get_bug_update_url( $t_bug->id ) . '"><img src="' . $t_icon_path . 'update.png' . '" alt="' . lang_get( 'update_bug_button' ) . '" /></a>';
-                                    }
+			# choose color based on status
+			$status_label = html_get_status_css_class( $t_bug->status, auth_get_current_user_id(), $t_bug->project_id );
+			$t_status = string_attribute( get_enum_element( 'status', bug_get_field( $t_bug->id, 'status' ), $t_bug->project_id ) );
+			echo '<i class="fa fa-square-o fa-xlg ' . $status_label . '" title="' . $t_status . '"></i> ';
 
-                                    if( ON == config_get( 'show_priority_text' ) ) {
-                                            print_formatted_priority_string( $t_bug );
-                                    } else {
-                                            print_status_icon( $t_bug->priority );
-                                    }
+			if( !bug_is_readonly( $t_bug->id ) && access_has_bug_level( $t_update_bug_threshold, $t_bug->id ) ) {
+				echo '<a class="edit" href="' . string_get_bug_update_url( $t_bug->id ) . '"><i class="fa fa-pencil blue" title="' . lang_get( 'update_bug_button' ) . '"></i></a>&nbsp;';
+			}
 
-                                    if( $t_attachment_count > 0 ) {
-                                            $t_href = string_get_bug_view_url( $t_bug->id ) . '#attachments';
-                                            $t_href_title = sprintf( lang_get( 'view_attachments_for_issue' ), $t_attachment_count, $t_bug->id );
-                                            $t_alt_text = $t_attachment_count . lang_get( 'word_separator' ) . lang_get( 'attachments' );
-                                            echo '<a class="attachments" href="' . $t_href . '" title="' . $t_href_title . '">';
-                                            echo '<img src="' . $t_icon_path . 'attachment.png" alt="' . $t_alt_text . '" title="' . $t_alt_text . '" /></a>';
-                                    }
+			if( ON == config_get( 'show_priority_text' ) ) {
+				print_formatted_priority_string( $t_bug );
+			} else {
+				print_status_icon( $t_bug->priority );
+			}
 
-                                    if( VS_PRIVATE == $t_bug->view_state ) {
-                                            echo '<img src="' . $t_icon_path . 'protected.gif" width="8" height="15" alt="' . lang_get( 'private' ) . '" />';
-                                    }
-                                    ?>
-                    </td>
+			if( $t_attachment_count > 0 ) {
+				$t_href = string_get_bug_view_url( $t_bug->id ) . '#attachments';
+				$t_href_title = sprintf( lang_get( 'view_attachments_for_issue' ), $t_attachment_count, $t_bug->id );
+				$t_alt_text = $t_attachment_count . lang_get( 'word_separator' ) . lang_get( 'attachments' );
+				echo '<a class="attachments" href="' . $t_href . '" title="' . $t_href_title . '">';
+				echo '<i class="fa fa-paperclip blue" title="' . $t_alt_text . '"></i></a>&nbsp;';
+			}
 
-                    <?php
-                    # -- Summary --?>
-                    <td>
-                            <?php
-                                    if( ON == config_get( 'show_bug_project_links' ) && helper_get_current_project() != $t_bug->project_id ) {
-                                            echo '<span>[', string_display_line( project_get_name( $t_bug->project_id ) ), '] </span>';
-                                    }
-                                    $t_bug_url = string_get_bug_view_url( $t_bug->id, null );
-                                    $t_bug_url_title = string_html_specialchars( sprintf( lang_get( 'label' ), lang_get( 'issue_id' ) . $t_bug->id ) . lang_get( 'word_separator' ) . $t_bug->summary );
-                                    echo '<span><a href="' . $t_bug_url . '" title="' . $t_bug_url_title . '">' . $t_summary . '</a></span><br />';
-                    ?>
-                            <?php
-                    # type project name if viewing 'all projects' or bug is in subproject
-                    echo '<span class="small">', string_display_line( category_full_name( $t_bug->category_id, true, $t_bug->project_id ) ), '</span>';
+			if( VS_PRIVATE == $t_bug->view_state ) {
+				echo '<i class="ace-icon fa fa-lock"></i>&nbsp;';
+			}
+			?>
+	</td>
 
-                    echo '<span class="small"> - ';
-                    if( $t_bug->last_updated > strtotime( '-' . $t_filter[FILTER_PROPERTY_HIGHLIGHT_CHANGED] . ' hours' ) ) {
-                            echo '<strong>' . $t_last_updated . '</strong>';
-                    } else {
-                            echo $t_last_updated;
-                    }
-                    echo '</span>';
-                    ?>
-                    </td>
-            </tr>
-            <?php
+	<?php
+	# -- Summary --?>
+	<td>
+		<?php
+			if( ON == config_get( 'show_bug_project_links' ) && helper_get_current_project() != $t_bug->project_id ) {
+				echo '<span>[', string_display_line( project_get_name( $t_bug->project_id ) ), '] </span>';
+			}
+			$t_bug_url = string_get_bug_view_url( $t_bug->id, null );
+			$t_bug_url_title = string_html_specialchars( sprintf( lang_get( 'label' ), lang_get( 'issue_id' ) . $t_bug->id ) . lang_get( 'word_separator' ) . $t_bug->summary );
+			echo '<span><a href="' . $t_bug_url . '" title="' . $t_bug_url_title . '">' . $t_summary . '</a></span><br />';
+	?>
+		<?php
+	# type project name if viewing 'all projects' or bug is in subproject
+	echo '<span class="small">', string_display_line( category_full_name( $t_bug->category_id, true, $t_bug->project_id ) ), '</span>';
+
+	echo '<span class="small"> - ';
+	if( $t_bug->last_updated > strtotime( '-' . $t_filter[FILTER_PROPERTY_HIGHLIGHT_CHANGED] . ' hours' ) ) {
+		echo '<strong>' . $t_last_updated . '</strong>';
+	} else {
+		echo $t_last_updated;
+	}
+	echo '</span>';
+	?>
+	</td>
+</tr>
+<?php
 	# -- end of Repeating bug row --
     }
 
