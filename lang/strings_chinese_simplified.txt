@@ -19,7 +19,7 @@
  *
  * **********************************************************************
  * ** This file contains translations stored in translatewiki.net.     **
- * ** See http://translatewiki.net/wiki/Project:About for information  **
+ * ** See https://translatewiki.net/wiki/Project:About for information **
  * ** on copyright/license for translatewiki.net translations.         **
  * **********************************************************************
  * **                                                                  **
@@ -519,7 +519,7 @@ $s_lost_password_title = '重置密码';
 $s_lost_password_done_title = '密码邮件已发出';
 $s_lost_password_subject = '密码重置';
 $s_lost_password_info = '如果你想重置忘记的密码, 请填写你的用户名和邮件地址。<br /><br />如果你填写的信息是有效的, 你将通过电子邮件收到一个含有特殊验证码的网页链接，点击该链接即可修改你的密码。';
-$s_lost_password_confirm_hash_OK = '系统已经接受了你的确认，请更新密码。';
+$s_lost_password_confirm_hash_OK = '系统已经接受了您的确认，请更新密码。';
 $s_open_and_assigned_to_me_label = '开启并分配给我的：';
 $s_open_and_reported_to_me_label = '开启并由我汇报的：';
 $s_newer_news_link = '更新的新闻';
@@ -925,7 +925,7 @@ $s_query_name_label = '过滤器名：';
 $s_query_exists = '此特定的筛选器似乎已经存在。';
 $s_query_dupe_name = '这个名称已经被另外一个筛选器使用，请选择一个不同的名称。';
 $s_query_blank_name = '没有名称就不能保存过滤器，在保存前请给当前过滤器起一个名字。';
-$s_query_name_too_long = '您不能将存储与超过 64 个字符的筛选器名称。请给此筛选器较短的名称。';
+$s_query_name_too_long = '您不能存储超过 64 个字符的过滤器名称。请为此过滤器提供一个更短的名称。';
 $s_query_store_error = '保存此筛选器时出错。';
 $s_open_queries = '管理过滤器';
 $s_query_delete_msg = '您确实要删除此筛选器吗？';
@@ -1021,7 +1021,7 @@ $s_roadmap = '路线图';
 $s_resolved_progress = '已解决 %1$d 个问题(共 %2$d 个问题)，进度(%3$d%%)。';
 $s_roadmap_empty = '没有可用路线图信息';
 $s_roadmap_empty_manager = '没有可用的线路图信息。一旦项目有版本并且问题有设置“目标版本”就会包括问题。';
-$s_http_auth_realm = 'MantisBT 问题管理系统登录';
+$s_http_auth_realm = 'MantisBT 登录';
 $s_bug = '问题';
 $s_bugs = '个问题';
 $s_add_new_relationship = '新建关联';

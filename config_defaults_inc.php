@@ -865,6 +865,8 @@ $g_logo_url = '%default_home_page%';
  * Specifies whether to enable support for project documents or not.
  * This feature is deprecated and is expected to be moved to a plugin
  * in the future.
+ * @see $g_view_proj_doc_threshold
+ * @see $g_upload_project_file_threshold
  * @global integer $g_enable_project_documentation
  */
 $g_enable_project_documentation = OFF;
@@ -2654,7 +2656,10 @@ $g_bug_revision_drop_threshold = MANAGER;
 /**
  * access level needed to upload files to the project documentation section
  * You can set this to NOBODY to prevent uploads to projects
- * See also: $g_upload_bug_file_threshold, $g_allow_file_upload
+ * @see $g_enable_project_documentation
+ * @see $g_view_proj_doc_threshold
+ * @see $g_allow_file_upload
+ * @see $g_upload_bug_file_threshold
  * @global integer $g_upload_project_file_threshold
  */
 $g_upload_project_file_threshold = MANAGER;
@@ -2686,7 +2691,7 @@ $g_update_bugnote_threshold = DEVELOPER;
  * Threshold needed to view project documentation
  * @global integer $g_view_proj_doc_threshold
  */
-$g_view_proj_doc_threshold = ANYBODY;
+$g_view_proj_doc_threshold = VIEWER;
 
 /**
  * Site manager
@@ -4355,3 +4360,24 @@ $g_webservice_version_when_not_found = '';
  * @global boolean $g_mail_use_modern_template
  */
 $g_mail_use_modern_template = OFF;
+
+/**
+ * this array sets the access user profile to be shown on the 
+ * bug_change_status_page.
+ * if a profile is not listed, it falls back to $g_update_bug_status_threshold
+ * example:
+ * $g_set_status_threshold = array(
+ *     ACKNOWLEDGED => MANAGER,
+ *     CONFIRMED => DEVELOPER,
+ *     CLOSED => MANAGER
+ * );
+ * @global array $g_set_status_to_threshold
+ */
+$g_set_status_to_threshold = array( NEW_ => REPORTER );
+
+/**
+ * This bool sets if the last user asigned to the bug must be shown on the
+ * list in the bug_change_status_page.
+ * @global bool $g_show_last_user_asigned_to_bug
+ */
+$g_show_last_user_asigned_to_bug = OFF;

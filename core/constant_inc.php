@@ -223,6 +223,8 @@ define( 'BUG_HAS_DUPLICATE', 4 );
 define( 'BUG_UPDATE_TYPE_NORMAL', 'update' );
 define( 'BUG_UPDATE_TYPE_ASSIGN', 'assign' );
 define( 'BUG_UPDATE_TYPE_CLOSE', 'close' );
+define( 'BUG_UPDATE_TYPE_REOPEN', 'reopen' );
+define( 'BUG_UPDATE_TYPE_CHANGE_STATUS', 'change_status' );
 
 # error messages
 define( 'ERROR_GENERIC', 0 );
@@ -276,6 +278,7 @@ define( 'ERROR_FILE_DUPLICATE', 502 );
 define( 'ERROR_FILE_INVALID_UPLOAD_PATH', 503 );
 define( 'ERROR_FILE_NO_UPLOAD_FAILURE', 504 );
 define( 'ERROR_FILE_MOVE_FAILED', 505 );
+define( 'ERROR_FILE_NOT_FOUND', 506 );
 
 # ERROR_BUGNOTE_*
 define( 'ERROR_BUGNOTE_NOT_FOUND', 600 );
