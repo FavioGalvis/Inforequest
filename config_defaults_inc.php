@@ -2641,6 +2641,13 @@ $g_view_handler_threshold = VIEWER;
 $g_view_history_threshold = VIEWER;
 
 /**
+ * access level needed to view user names in bug reports and notification email
+ * @todo faviogalvis: now it is implemented for all site
+ * @global integer $g_view_history_threshold
+ */
+$g_view_history_users_threshold = VIEWER;
+
+/**
  * access level needed to send a reminder from the bug view pages
  * set to NOBODY to disable the feature
  * @global integer $g_bug_reminder_threshold

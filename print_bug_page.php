@@ -126,6 +126,7 @@ $t_show_additional_information = in_array( 'additional_info', $t_fields );
 $t_show_tags = in_array( 'tags', $t_fields );
 $t_show_attachments = in_array( 'attachments', $t_fields );
 $t_show_history = access_has_bug_level( config_get( 'view_history_threshold' ), $f_bug_id );
+$t_show_history_users = access_has_bug_level( config_get( 'view_history_users_threshold' ), $f_bug_id );
 
 $t_window_title = string_display_line( config_get( 'window_title' ) );
 $t_project_name = $t_show_project ? string_display_line( project_get_name( $t_bug->project_id ) ) : '';
@@ -555,7 +556,9 @@ if( $t_show_history ) {
 
 	echo '<tr class="bold">';
 	echo '<th>', lang_get( 'date_modified' ), '</th>';
-	echo '<th>', lang_get( 'username' ), '</th>';
+        if ( $t_show_history_users ) {
+            echo '<th>', lang_get( 'username' ), '</th>';
+        }
 	echo '<th>', lang_get( 'field' ), '</th>';
 	echo '<th>', lang_get( 'change' ), '</th>';
 	echo '</tr>';
@@ -565,9 +568,11 @@ if( $t_show_history ) {
 	foreach ( $t_history as $t_item ) {
 		echo '<tr class="print">';
 		echo '<td class="print">', $t_item['date'], '</td>';
-		echo '<td class="print">';
-		print_user( $t_item['userid'] );
-		echo '</td>';
+                if ( $t_show_history_users ) {
+                    echo '<td class="print">';
+                    print_user( $t_item['userid'] );
+                    echo '</td>';
+                }
 		echo '<td class="print">', string_display( $t_item['note'] ), '</td>';
 		echo '<td class="print">', string_display_line_links( $t_item['change'] ), '</td>';
 		echo '</tr>';
