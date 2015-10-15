@@ -14,8 +14,6 @@ fi
 #
 HOSTNAME=localhost
 
-sudo: true
-
 # Port 80 requires use of 'sudo' to run the PHP built-in web server, which
 # causes builds to fail due to a bug in Travis [1]so we use port 8080 instead.
 # [1] https://github.com/travis-ci/travis-ci/issues/2235
