@@ -47,6 +47,7 @@ require_api( 'print_api.php' );
 require_api( 'string_api.php' );
 
 $t_access_level_needed = config_get( 'view_history_threshold' );
+$t_access_level_users_needed = access_has_bug_level( config_get( 'view_history_users_threshold' ), $f_bug_id );
 if( !access_has_bug_level( $t_access_level_needed, $f_bug_id ) ) {
 	return;
 }
@@ -83,9 +84,11 @@ if( !access_has_bug_level( $t_access_level_needed, $f_bug_id ) ) {
 			<th class="small-caption">
 				<?php echo lang_get( 'date_modified' ) ?>
 			</th>
-			<th class="small-caption">
-				<?php echo lang_get( 'username' ) ?>
-			</th>
+                        <?php if ( $t_access_level_users_needed ) { ?>
+                            <th class="small-caption">
+                                    <?php echo lang_get( 'username' ) ?>
+                            </th>
+                        <?php } ?>
 			<th class="small-caption">
 				<?php echo lang_get( 'field' ) ?>
 			</th>
@@ -103,9 +106,11 @@ if( !access_has_bug_level( $t_access_level_needed, $f_bug_id ) ) {
 			<td class="small-caption">
 				<?php echo $t_item['date'] ?>
 			</td>
-			<td class="small-caption">
-				<?php print_user( $t_item['userid'] ) ?>
-			</td>
+                        <?php if ( $t_access_level_users_needed ) { ?>
+                            <td class="small-caption">
+                                    <?php print_user( $t_item['userid'] ) ?>
+                            </td>
+                        <?php } ?>
 			<td class="small-caption">
 				<?php echo string_display( $t_item['note'] ) ?>
 			</td>
