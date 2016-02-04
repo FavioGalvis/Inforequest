@@ -444,16 +444,16 @@ function summary_print_by_age() {
 function summary_print_by_developer() {
 	$t_project_id = helper_get_current_project();
 
-	$t_specific_where = helper_project_specific_where( $t_project_id );
+	$t_specific_where = helper_project_specific_where_join( $t_project_id );
 	if( ' 1<>1' == $t_specific_where ) {
 		return;
 	}
 
-	$t_query = 'SELECT COUNT(id) as bugcount, handler_id, status
-				FROM {bug}
-				WHERE handler_id>0 AND ' . $t_specific_where . '
-				GROUP BY handler_id, status
-				ORDER BY handler_id, status';
+	$t_query = 'SELECT (status) as status, user_id, bug_id
+				FROM request_bug_history_table, request_bug_table
+				WHERE request_bug_history_table.bug_id=request_bug_table.id
+				GROUP BY status, bug_id, user_id
+				ORDER BY user_id';
 	$t_result = db_query( $t_query );
 
 	$t_last_handler = -1;
@@ -464,13 +464,70 @@ function summary_print_by_developer() {
 
 	$t_resolved_val = config_get( 'bug_resolved_status_threshold' );
 	$t_closed_val = config_get( 'bug_closed_status_threshold' );
+	$t_developer_level_val = config_get( 'private_project_threshold' );
 
 	$t_summaryusers = array();
 	$t_summarydata = array();
 	while( $t_row = db_fetch_array( $t_result ) ) {
-		$t_summarydata[] = $t_row;
-		$t_summaryusers[] = $t_row['handler_id'];
+		if ( access_has_bug_level( config_get( 'private_project_threshold' ), $t_row['bug_id'], $t_row['user_id'] ) ) {
+                        $t_summarydata[] = $t_row;
+                        $t_summaryusers[] = $t_row['user_id'];
+                        $t_summarybugid[] = $t_row['bug_id'];
+                }
 	}
+
+	/* Verify Handlers are also listed*/
+	$t_specific_where_handler = helper_project_specific_where( $t_project_id );
+	
+	$t_query_handler = 'SELECT (id) as bug_id, handler_id, status
+				FROM {bug}
+				WHERE handler_id>0
+				ORDER BY handler_id, status';
+	$t_result_handler = db_query( $t_query_handler );
+	
+	while( $t_row_handler = db_fetch_array( $t_result_handler ) ) {
+                if ( access_has_bug_level( config_get( 'private_project_threshold' ), $t_row_handler['bug_id'], $t_row_handler['handler_id'] ) ) {
+                        $t_row_handler_mig['bug_id'] = $t_row_handler['bug_id'];
+                        $t_row_handler_mig['user_id'] = $t_row_handler['handler_id'];
+                        $t_row_handler_mig['status'] = $t_row_handler['status'];
+                        $t_summarydatahandler[] = $t_row_handler_mig;
+                        $t_summaryusershandler[] = $t_row_handler_mig['user_id'];
+                }
+	}
+	
+	$t_isvalid_row = -2;
+	
+	foreach ( $t_summarydatahandler as $t_row_handlerss ) {
+		foreach ( $t_summarydata as $t_row_main ) {
+			if ( ( $t_row_handlerss['user_id']!=$t_row_main['user_id'] ) && ( $t_isvalid_row!=1 ) ) {
+				$t_isvalid_row = -1;
+			} else if ( ( $t_row_handlerss['user_id']==$t_row_main['user_id'] ) && ( $t_row_handlerss['bug_id']==$t_row_main['bug_id'] ) ) {
+				$t_isvalid_row = 0;
+				break;
+			} else if ( ( $t_row_handlerss['user_id']==$t_row_main['user_id'] ) && ( $t_row_handlerss['bug_id']!=$t_row_main['bug_id'] ) && ( $t_isvalid_row!=0 )) {
+				$t_isvalid_row = 1;
+			}
+		}
+		if ( $t_isvalid_row==1 ) {
+			$t_summarydata[]=$t_row_handlerss;
+                        $t_summaryusers[] = $t_row_handlerss['user_id'];
+                        $t_summarybugid[] = $t_row_handlerss['bug_id'];
+                        $t_isvalid_row = -2;
+		} else if ( $t_isvalid_row==0 ) {
+			$t_isvalid_row = -2;
+		}
+	}
+
+	function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+            $sort_col = array();
+            foreach ($arr as $key=> $row) {
+                $sort_col[$key] = $row[$col];
+            }
+
+            array_multisort($sort_col, $dir, $arr);
+        }
+
+    array_sort_by_column($t_summarydata, 'user_id');
 
 	user_cache_array_rows( array_unique( $t_summaryusers ) );
 

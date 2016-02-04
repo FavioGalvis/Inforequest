@@ -518,6 +518,34 @@ function helper_project_specific_where( $p_project_id, $p_user_id = null ) {
 }
 
 /**
+ * return string to use in db queries containing projects of given user
+ * @param integer $p_project_id A valid project identifier.
+ * @param integer $p_user_id    A valid user identifier.
+ * @return string
+ */
+function helper_project_specific_where_join( $p_project_id, $p_user_id = null ) {
+	if( null === $p_user_id ) {
+		$p_user_id = auth_get_current_user_id();
+	}
+
+	$t_project_ids = user_get_all_accessible_projects( $p_user_id, $p_project_id );
+
+        $t_project_filter = 'bug_id IN (SELECT (id) as id FROM request_bug_table WHERE';
+        
+	if( 0 == count( $t_project_ids ) ) {
+		$t_project_filter = $t_project_filter . ' 1<>1';
+	} else if( 1 == count( $t_project_ids ) ) {
+		$t_project_filter = $t_project_filter . ' project_id=' . reset( $t_project_ids );
+	} else {
+		$t_project_filter = $t_project_filter . ' project_id IN (' . join( ',', $t_project_ids ) . ')';
+	}
+        
+        $t_project_filter = $t_project_filter . ')'; 
+
+	return $t_project_filter;
+}
+
+/**
  * Get array of columns for given target
  * @param integer $p_columns_target Target view for the columns.
  * @param boolean $p_viewable_only  Whether to return viewable columns only.
