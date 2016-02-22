@@ -739,9 +739,10 @@ $t_bugnotes = bugnote_get_all_visible_bugnotes( $t_id, $t_user_bugnote_order, $t
 
 			# grab the bugnote text and id and prefix with v3_
 			$t_note = string_display_links( $t_bugnote->note );
+                } // end for each (print only last bugnote)
 	?>
 <tr>
-	<td width="12%">
+	<td width="25%">
 				(<?php echo bugnote_format_id( $t_bugnote->id ) ?>)
 			<br />
 				<?php print_user( $t_bugnote->reporter_id ) ?>&#160;&#160;&#160;
@@ -751,7 +752,7 @@ $t_bugnotes = bugnote_get_all_visible_bugnotes( $t_id, $t_user_bugnote_order, $t
 					echo '<br />(' . lang_get( 'last_edited') . lang_get( 'word_separator' ) . $t_last_modified . ')';
 				} ?>
 			</td>
-	<td>
+	<td width="75%">
 <?php
 					switch ( $t_bugnote->note_type ) {
 						case REMINDER:
@@ -770,7 +771,6 @@ $t_bugnotes = bugnote_get_all_visible_bugnotes( $t_id, $t_user_bugnote_order, $t
 		</tr>
 		<tr class="spacer"><td colspan="2"></td></tr>
 <?php
-		} # end for
 	} # end else
 ?>
 </table>                    
