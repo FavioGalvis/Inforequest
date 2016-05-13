@@ -71,3 +71,14 @@ tr.bugnote .bugnote-note { background-color: #e8e8e8; color: #000000; width: 75%
 /* manage_config_* colors */
 .color-global		{ background-color: LightBlue; }
 .color-project		{ background-color: LightGreen; }
+
+.bugdevlog-devlog { 
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -hp-pre-wrap; /* HP printers */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: pre-wrap; /* CSS 2.1 */
+    white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+    word-wrap: break-word; /* IE */
+    word-break: break-all;
+}

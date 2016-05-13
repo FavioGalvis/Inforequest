@@ -34,7 +34,7 @@
  * @uses lang_api.php
  */
 
-if( !defined( 'BUGNOTE_ADD_INC_ALLOW' ) ) {
+if( !defined( 'BUGDEVLOG_ADD_INC_ALLOW' ) ) {
 	return;
 }
 
@@ -55,22 +55,22 @@ require_api( 'lang_api.php' );
 <?php # Bugnote Add Form BEGIN ?>
 
 <div class="col-md-6 col-xs-12">
-<a id="addbugnote"></a>
+<a id="addbugdevlog"></a>
 <div class="space-10"></div>
 
 <?php
-	$t_collapse_block = is_collapsed( 'bugnote_add' );
+	$t_collapse_block = is_collapsed( 'bugdevlog_add' );
 	$t_block_css = $t_collapse_block ? 'collapsed' : '';
 	$t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 ?>
-<form id="bugnoteadd" method="post" action="bugnote_add.php" enctype="multipart/form-data">
-	<?php echo form_security_field( 'bugnote_add' ) ?>
+<form id="bugdevlogadd" method="post" action="bugdevlog_add.php" enctype="multipart/form-data">
+	<?php echo form_security_field( 'bugdevlog_add' ) ?>
 	<input type="hidden" name="bug_id" value="<?php echo $f_bug_id ?>" />
-	<div id="bugnote_add" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
+	<div id="bugdevlog_add" class="widget-box widget-color-green2 <?php echo $t_block_css ?>">
 		<div class="widget-header widget-header-small">
 			<h4 class="widget-title lighter">
 				<i class="ace-icon fa fa-comment"></i>
-				<?php echo lang_get( 'add_bugnote_title' ) ?>
+				<?php echo lang_get( 'add_bugdevlog_title' ) ?>
 			</h4>
 			<div class="widget-toolbar">
 				<a data-action="collapse" href="#">
@@ -87,62 +87,40 @@ require_api( 'lang_api.php' );
 		<tbody>
 			<tr>
 				<th class="category" width="15%">
-					<?php echo lang_get( 'bugnote' ) ?>
+					<?php echo lang_get( 'bugdevlog' ) ?>
 				</th>
 				<td width="85%">
-					<textarea name="bugnote_text" class="form-control" rows="7"></textarea>
+					<textarea name="bugdevlog_text" class="form-control" rows="7"></textarea>
 				</td>
 			</tr>
 
 <?php
 	if( access_has_bug_level( config_get( 'set_view_status_threshold' ), $f_bug_id ) ) {
 ?>
-			<tr>
+			<!--tr>
 				<th class="category">
-					<?php echo lang_get( 'view_status' ) ?>
+					<?php /* echo lang_get( 'view_status' ) */ ?>
 				</th>
 				<td>
-<?php
-		$t_default_bugnote_view_status = config_get( 'default_bugnote_view_status' );
+<?php /*
+		$t_default_bugdevlog_view_status = config_get( 'default_bugnote_view_status' );
 		if( access_has_bug_level( config_get( 'set_view_status_threshold' ), $f_bug_id ) ) {
-?>
-                                <div class="control-group">
-                                    <div class="radio">
-                                    <label class="control-group">
-					<input type="radio" class="ace" id="bugnote_add_view_status" name="private" value="public" <?php check_checked( $t_default_bugnote_view_status, VS_PUBLIC ); ?>/>
-					<span class="lbl"> <?php echo lang_get( 'private1' ) ?> </span>
-                                    </label>
-                                    </div>
-                                    <div class="radio">
-                                    <label class="control-group">
-					<input type="radio" class="ace" id="bugnote_add_view_status" name="private" value="semiprivate"/>
-					<span class="lbl"> <?php echo lang_get( 'private2' ) ?> </span>
-                                    </label>
-                                    </div>
-                                    <?php
-                                        if( access_has_bug_level( config_get( 'private_bugnote_threshold' ), $f_bug_id ) ) {
-                                    ?>
-                                        <div class="radio">
-                                        <label class="control-group">
-                                            <input type="radio" class="ace" id="bugnote_add_view_status" name="private" value="private" <?php check_checked( $t_default_bugnote_view_status, VS_PRIVATE ); ?>/>
-                                            <span class="lbl"> <?php echo lang_get( 'private3' ) ?> </span>
-                                        </label>
-                                        </div>
-                                    <?php
-                                        }
-                                    ?>
-                                </div>
-<?php
+*/ ?>
+				<label for="bugdevlog_add_view_status">
+					<input type="checkbox" class="ace" id="bugdevlog_add_view_status" name="private" <?php /* check_checked( $t_default_bugdevlog_view_status, VS_PRIVATE ); */ ?> />
+					<span class="lbl"> <?php /* echo lang_get( 'private' ); */ ?> </span>
+				</label>
+<?php /*
 		} else {
-			echo get_enum_element( 'project_view_state', $t_default_bugnote_view_status );
+			echo get_enum_element( 'project_view_state', $t_default_bugdevlog_view_status );
 		}
-?>
+*/ ?>
 				</td>
-			</tr>
+			</tr-->
 <?php
 	}
 
-	if( !config_get( 'time_tracking_enabled' ) ) {
+	if( config_get( 'time_tracking_enabled' ) ) {
 		if( access_has_bug_level( config_get( 'time_tracking_edit_threshold' ), $f_bug_id ) ) {
 ?>
 			<tr>
@@ -162,35 +140,6 @@ require_api( 'lang_api.php' );
 <?php
 		}
 	}
-
-	if( file_allow_bug_upload( $f_bug_id ) ) {
-		$t_file_upload_max_num = max( 1, config_get( 'file_upload_max_num' ) );
-		$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
-?>
-			<tr>
-				<th class="category">
-					<?php echo lang_get( $t_file_upload_max_num == 1 ? 'upload_file' : 'upload_files' ) ?>
-					<br />
-					<?php print_max_filesize( $t_max_file_size ); ?>
-				</th>
-				<td>
-					<input type="hidden" name="max_file_size" value="<?php echo $t_max_file_size ?>" />
-					<?php
-					# Display multiple file upload fields
-					for( $i = 0; $i < $t_file_upload_max_num; $i++ ) {
-						?>
-						<input id="ufile[]" name="ufile[]" type="file" size="50" />
-						<?php
-						if( $t_file_upload_max_num > 1 ) {
-							echo '<br />';
-						}
-					}
-					?>
-				</td>
-			</tr>
-<?php
-	}
-
 	event_signal( 'EVENT_BUGNOTE_ADD_FORM', array( $f_bug_id ) );
 ?>
 		</tbody>
@@ -198,7 +147,7 @@ require_api( 'lang_api.php' );
 </div>
 </div>
 	<div class="widget-toolbox padding-8 clearfix">
-		<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( 'add_bugnote_button' ) ?>" />
+		<input type="submit" class="btn btn-success btn-white btn-round" value="<?php echo lang_get( 'add_bugdevlog_button' ) ?>" />
 	</div>
 </div>
 </div>

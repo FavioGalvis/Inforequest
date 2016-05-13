@@ -672,3 +672,32 @@ function access_get_status_to_change_threshold( $p_status, $p_project_id = ALL_P
 		}
 	}
 }
+
+/**
+ * Check the current user's access against the given value and return true
+ * if the user's access is equal to or higher, false otherwise.
+ * This function looks up the bugdevlog's bug and performs an access check
+ * against that bug
+ * @param integer      $p_access_level Integer representing access level.
+ * @param integer      $p_bugdevlog_id Integer representing bugdevlog id to check access against.
+ * @param integer|null $p_user_id      Integer representing user id, defaults to null to use current user.
+ * @return boolean whether user has access level specified
+ * @access public
+ */
+function access_has_bugdevlog_level( $p_access_level, $p_bugdevlog_id, $p_user_id = null ) {
+	if( null === $p_user_id ) {
+		$p_user_id = auth_get_current_user_id();
+	}
+
+	$t_bug_id = bugdevlog_get_field( $p_bugdevlog_id, 'bug_id' );
+	$t_project_id = bug_get_field( $t_bug_id, 'project_id' );
+
+	# If the bug is private and the user is not the reporter, then the
+	# the user must also have higher access than private_bug_threshold
+	if( bugdevlog_get_field( $p_bugdevlog_id, 'view_state' ) == VS_PRIVATE && !bugdevlog_is_user_reporter( $p_bugnote_id, $p_user_id ) ) {
+		$t_private_bugdevlog_threshold = config_get( 'private_bugnote_threshold', null, $p_user_id, $t_project_id );
+		$p_access_level = max( $p_access_level, $t_private_bugdevlog_threshold );
+	}
+
+	return access_has_bug_level( $p_access_level, $t_bug_id, $p_user_id );
+}

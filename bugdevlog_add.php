@@ -51,12 +51,12 @@ require_api( 'helper_api.php' );
 require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 
-form_security_validate( 'bugnote_add' );
+form_security_validate( 'bugdevlog_add' );
 
 $f_bug_id		= gpc_get_int( 'bug_id' );
-$f_private		= gpc_get_string( 'private', 'public' );
+$f_private		= gpc_get_bool( 'private' );
 $f_time_tracking	= gpc_get_string( 'time_tracking', '0:00' );
-$f_bugnote_text	= trim( gpc_get_string( 'bugnote_text', '' ) );
+$f_bugdevlog_text	= trim( gpc_get_string( 'bugdevlog_text', '' ) );
 $f_files		= gpc_get_file( 'ufile', null );
 
 $t_bug = bug_get( $f_bug_id, true );
@@ -73,23 +73,14 @@ if( bug_is_readonly( $t_bug->id ) ) {
 
 access_ensure_bug_level( config_get( 'add_bugnote_threshold' ), $t_bug->id );
 
-if ( $f_private === 'private' || $f_private === 'semiprivate' ){
-    access_ensure_bug_level( config_get( 'set_view_status_threshold' ), $t_bug->id );
-}
-
-# Handle the file upload
-if( $f_files !== null ) {
-	if( !file_allow_bug_upload( $f_bug_id ) ) {
-		access_denied();
-	}
-
-	file_process_posted_files_for_bug( $f_bug_id, $f_files );
+if( $f_private ) {
+	access_ensure_bug_level( config_get( 'set_view_status_threshold' ), $t_bug->id );
 }
 
 # We always set the note time to BUGNOTE, and the API will overwrite it with TIME_TRACKING
 # if $f_time_tracking is not 0 and the time tracking feature is enabled.
-$t_bugnote_id = bugnote_add( $t_bug->id, $f_bugnote_text, $f_time_tracking, $f_private, BUGNOTE );
-if( !$t_bugnote_id ) {
+$t_bugdevlog_id = bugdevlog_add( $t_bug->id, $f_bugdevlog_text, $f_time_tracking, $f_private, BUGNOTE );
+if( $f_bugdevlog_text == '' ) {
 	error_parameters( lang_get( 'bugnote' ) );
 	trigger_error( ERROR_EMPTY_FIELD, ERROR );
 }
@@ -110,6 +101,6 @@ if( config_get( 'reassign_on_feedback' ) &&
 	}
 }
 
-form_security_purge( 'bugnote_add' );
+form_security_purge( 'bugdevlog_add' );
 
 print_successful_redirect_to_bug( $t_bug->id );

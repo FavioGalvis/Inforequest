@@ -611,8 +611,8 @@ if( $t_show_product_version || $t_show_product_build ) {
 
 	# Product Version
 	if( $t_show_product_version ) {
-		echo '<th class="bug-product-version category">', lang_get( 'product_version' ), '</th>';
-		echo '<td class="bug-product-version">', $t_product_version_string, '</td>';
+		echo '<th class="bug-project-version category">', lang_get( 'product_version' ), '</th>';
+		echo '<td class="bug-project-version">', $t_product_version_string, '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -766,6 +766,8 @@ if( $t_show_monitor_box ) {
 	include( $t_mantis_dir . 'bug_monitor_list_view_inc.php' );
 }
 
+echo '<div class="col-md-12 col-xs-12"></div>';
+
 # Bugnotes and "Add Note" box
 if( 'ASC' == current_user_get_pref( 'bugnote_order' ) ) {
 	define( 'BUGNOTE_VIEW_INC_ALLOW', true );
@@ -788,6 +790,28 @@ if( 'ASC' == current_user_get_pref( 'bugnote_order' ) ) {
 # Allow plugins to display stuff after notes
 event_signal( 'EVENT_VIEW_BUG_EXTRA', array( $f_bug_id ) );
 
+echo '<div class="col-md-12 col-xs-12"></div>';
+
+if ( current_user_get_access_level() >= config_get( 'private_project_threshold' ) ) {
+    # Bugdevlog and "Add ddevlog" box
+    if( 'ASC' == current_user_get_pref( 'bugnote_order' ) ) {
+            define( 'BUGDEVLOG_VIEW_INC_ALLOW', true );
+            include( $t_mantis_dir . 'bugdevlog_view_inc.php' );
+
+            if( !$t_force_readonly ) {
+                    define( 'BUGDEVLOG_ADD_INC_ALLOW', true );
+                    include( $t_mantis_dir . 'bugdevlog_add_inc.php' );
+            }
+    } else {
+            if( !$t_force_readonly ) {
+                    define( 'BUGDEVLOG_ADD_INC_ALLOW', true );
+                    include( $t_mantis_dir . 'bugdevlog_add_inc.php' );
+            }
+
+            define( 'BUGDEVLOG_VIEW_INC_ALLOW', true );
+            include( $t_mantis_dir . 'bugdevlog_view_inc.php' );
+    }
+}
 # Time tracking statistics
 if( config_get( 'time_tracking_enabled' ) &&
 	access_has_bug_level( config_get( 'time_tracking_view_threshold' ), $f_bug_id ) ) {

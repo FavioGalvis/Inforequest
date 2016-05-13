@@ -131,6 +131,7 @@ $s_old_value = 'Old Value';
 $s_new_value = 'New Value';
 $s_date_modified = 'Date Modified';
 $s_bugnote = 'Note';
+$s_bugdevlog = 'Log';
 $s_change = 'Change';
 $s_bugnote_view_state = 'Note View State';
 $s_bug_monitor = 'Issue Monitored';
@@ -603,15 +604,19 @@ $s_bugnote_added_msg = 'Note added...';
 # bugnote_delete.php
 $s_bugnote_deleted_msg = 'Note has been successfully deleted...';
 $s_bug_notes_title = 'Notes';
+$s_bug_devlog_title = 'Development Log';
 
 # bugnote_edit_page.php
 $s_edit_bugnote_title = 'Edit Note';
 
 # bugnote_inc.php
 $s_no_bugnotes_msg = 'There are no notes attached to this issue.';
+$s_no_bugdevlog_msg = 'There are no development logs attached to this issue.';
 $s_delete_link = 'Delete';
 $s_add_bugnote_title = 'Add Note';
+$s_add_bugdevlog_title = 'Add development log';
 $s_add_bugnote_button = 'Add Note';
+$s_add_bugdevlog_button = 'Add Log';
 $s_bugnote_edit_link = 'Edit';
 $s_closed_bug_button = 'Close Issue';
 
@@ -883,6 +888,9 @@ $s_view_status = 'View Status';
 $s_view_status_label = 'View Status:';
 $s_public = 'public';
 $s_private = 'private';
+$s_private1 = 'public';
+$s_private2 = 'restricted';
+$s_private3 = 'private';
 $s_update_project_button = 'Update Project';
 $s_delete_project_button = 'Delete Project';
 $s_copy_from = 'Copy From';

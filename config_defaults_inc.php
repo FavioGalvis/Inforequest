@@ -2627,6 +2627,13 @@ $g_update_bug_assign_threshold = '%handle_bug_threshold%';
 $g_private_bugnote_threshold = DEVELOPER;
 
 /**
+ * access level needed to view semiprivate bugnotes
+ * Look in the constant_inc.php file if you want to set a different value
+ * @global integer $g_private_bugnote_threshold
+ */
+$g_semiprivate_bugnote_threshold = REPORTER;
+
+/**
  * access level needed to view handler in bug reports and notification email
  * @todo yarick123: now it is implemented for notification email only
  * @global integer $g_view_handler_threshold

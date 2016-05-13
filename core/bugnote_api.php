@@ -225,11 +225,13 @@ function bugnote_add( $p_bug_id, $p_bugnote_text, $p_time_tracking = '0:00', $p_
 	}
 
 	# Check for private bugnotes.
-	if( $p_private && access_has_bug_level( config_get( 'set_view_status_threshold' ), $p_bug_id, $p_user_id ) ) {
+	if( $p_private==='private' && access_has_bug_level( config_get( 'set_view_status_threshold' ), $p_bug_id, $p_user_id ) ) {
 		$t_view_state = VS_PRIVATE;
+	} else if ( $p_private==='semiprivate' && access_has_bug_level( config_get( 'set_view_status_threshold' ), $p_bug_id, $p_user_id ) ) {
+		$t_view_state = VS_SEMIPRIVATE;
 	} else {
-		$t_view_state = VS_PUBLIC;
-	}
+                $t_view_state = VS_PUBLIC;
+        }
 
 	# insert bugnote info
 	$t_query = 'INSERT INTO {bugnote}
@@ -413,7 +415,7 @@ function bugnote_get_all_visible_bugnotes( $p_bug_id, $p_user_bugnote_order, $p_
 	for( $i = 0; ( $i < $t_bugnote_count ) && ( $t_bugnotes_found < $t_bugnote_limit ); $i++ ) {
 		$t_bugnote = array_pop( $t_all_bugnotes );
 
-		if( $t_private_bugnote_visible || $t_bugnote->reporter_id == $t_user_id || ( VS_PUBLIC == $t_bugnote->view_state ) ) {
+		if( $t_private_bugnote_visible || ( $t_user_access_level > $t_bugnote->view_state ) || ( $t_bugnote->reporter_id == $t_user_id ) || ( VS_PUBLIC == $t_bugnote->view_state ) ) {
 			# If the access level specified is not enough to see time tracking information
 			# then reset it to 0.
 			if( !$t_time_tracking_visible ) {
@@ -718,4 +720,331 @@ function bugnote_clear_cache( $p_bugnote_id = null ) {
 	$g_cache_bugnotes = array();
 
 	return true;
+}
+
+/**
+ * Bugdevlog Data Structure Definition
+ */
+class BugdevlogData {
+	/**
+	 * Bugnote ID
+	 */
+	public $id;
+
+	/**
+	 * Bug ID
+	 */
+	public $bug_id;
+
+	/**
+	 * Reporter ID
+	 */
+	public $reporter_id;
+
+	/**
+	 * Note text
+	 */
+	public $note;
+
+	/**
+	 * View State
+	 */
+	public $view_state;
+
+	/**
+	 * Date submitted
+	 */
+	public $date_submitted;
+
+	/**
+	 * Last Modified
+	 */
+	public $last_modified;
+
+	/**
+	 * Bugnote type
+	 */
+	public $note_type;
+
+	/**
+	 * ???
+	 */
+	public $note_attr;
+
+	/**
+	 * Time tracking information
+	 */
+	public $time_tracking;
+
+	/**
+	 * Bugnote Text id
+	 */
+	public $devlog;
+}
+
+/**
+ * Build the bug_devlog array for the given bug_id.
+ * Return BugdevlogData class object with raw values from the tables except the field
+ * last_modified - it is UNIX_TIMESTAMP.
+ * The data is not filtered by VIEW_STATE !!
+ * @param integer $p_bug_id A bug identifier.
+ * @return array array of bugdevlog
+ * @access public
+ */
+function bugdevlog_get_all_bugdevlogs( $p_bug_id ) {
+	global $g_cache_bugdevlogs, $g_cache_bugdevlog;
+
+	if( !isset( $g_cache_bugdevlogs ) ) {
+		$g_cache_bugdevlogs = array();
+	}
+
+	if( !isset( $g_cache_bugdevlog ) ) {
+		$g_cache_bugdevlog = array();
+	}
+
+	# the cache should be aware of the sorting order
+	if( !isset( $g_cache_bugdevlogs[(int)$p_bug_id] ) ) {
+		# Now sorting by submit date and id (#11742). The date_submitted
+		# column is currently not indexed, but that does not seem to affect
+		# performance in a measurable way
+		$t_query = 'SELECT *
+			          	FROM {bugdevlog}
+						WHERE bug_id=' . db_param() . '
+						ORDER BY date_submitted ASC, id ASC';
+		$t_bugdevlogs = array();
+
+		# BUILD bugnotes array
+		$t_result = db_query( $t_query, array( $p_bug_id ) );
+
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			$t_bugdevlog = new BugdevlogData;
+
+			$t_bugdevlog->id = $t_row['id'];
+			$t_bugdevlog->bug_id = $t_row['bug_id'];
+			$t_bugdevlog->devlog = $t_row['devlog'];
+			$t_bugdevlog->view_state = $t_row['view_state'];
+			$t_bugdevlog->reporter_id = $t_row['reporter_id'];
+			$t_bugdevlog->date_submitted = $t_row['date_submitted'];
+			$t_bugdevlog->last_modified = $t_row['last_modified'];
+			$t_bugdevlog->note_type = $t_row['note_type'];
+			$t_bugdevlog->note_attr = $t_row['note_attr'];
+			$t_bugdevlog->time_tracking = $t_row['time_tracking'];
+
+			# Handle old bugnotes before setting type to time tracking
+			if ( $t_bugdevlog->time_tracking != 0 ) {
+				$t_bugdevlog->note_type = TIME_TRACKING;
+			}
+
+			$t_bugdevlogs[] = $t_bugdevlog;
+			$g_cache_bugdevlog[(int)$t_bugdevlog->id] = $t_bugdevlog;
+		}
+
+		$g_cache_bugdevlogs[(int)$p_bug_id] = $t_bugdevlogs;
+	}
+
+	return $g_cache_bugdevlogs[(int)$p_bug_id];
+}
+
+/**
+ * Build the bugdevlogs array for the given bug_id filtered by specified $p_user_access_level.
+ * Bugdevlogs are sorted by date_submitted according to 'bugnote_order' configuration setting.
+ * Return BugdevlogData class object with raw values from the tables except the field
+ * last_modified - it is UNIX_TIMESTAMP.
+ * @param integer $p_bug_id             A bug identifier.
+ * @param integer $p_user_bugnote_order Sort order.
+ * @param integer $p_user_bugnote_limit Number of bugnotes to display to user.
+ * @param integer $p_user_id            An user identifier.
+ * @return array array of bugnotes
+ * @access public
+ */
+function bugdevlog_get_all_visible_bugdevlogs( $p_bug_id, $p_user_bugnote_order, $p_user_bugnote_limit, $p_user_id = null ) {
+	if( $p_user_id === null ) {
+		$t_user_id = auth_get_current_user_id();
+	} else {
+		$t_user_id = $p_user_id;
+	}
+
+	$t_project_id = bug_get_field( $p_bug_id, 'project_id' );
+	$t_user_access_level = user_get_access_level( $t_user_id, $t_project_id );
+
+	$t_all_bugdevlogs = bugdevlog_get_all_bugdevlogs( $p_bug_id );
+
+	$t_private_bugdevlog_visible = access_compare_level( $t_user_access_level, config_get( 'private_bugnote_threshold' ) );
+	$t_time_tracking_visible = access_compare_level( $t_user_access_level, config_get( 'time_tracking_view_threshold' ) );
+
+	$t_bugdevlogs = array();
+	$t_bugdevlog_count = count( $t_all_bugdevlogs );
+	$t_bugdevlog_limit = $p_user_bugnote_limit > 0 ? $p_user_bugnote_limit : $t_bugdevlog_count;
+	$t_bugdevlog_found = 0;
+
+	# build a list of the latest bugnotes that the user can see
+	for( $i = 0; ( $i < $t_bugdevlog_count ) && ( $t_bugdevlog_found < $t_bugdevlog_limit ); $i++ ) {
+		$t_bugdevlog = array_pop( $t_all_bugdevlogs );
+
+		if( $t_private_bugdevlog_visible || $t_bugdevlog->reporter_id == $t_user_id || ( VS_PUBLIC == $t_bugdevlog->view_state ) ) {
+			# If the access level specified is not enough to see time tracking information
+			# then reset it to 0.
+			if( !$t_time_tracking_visible ) {
+				$t_bugdevlog->time_tracking = 0;
+			}
+
+			$t_bugdevlogs[$t_bugdevlog_found++] = $t_bugdevlog;
+		}
+	}
+
+	# reverse the list for users with ascending view preferences
+	if( 'ASC' == $p_user_bugnote_order ) {
+		$t_bugdevlogs = array_reverse( $t_bugdevlogs );
+	}
+
+	return $t_bugdevlogs;
+}
+
+/**
+ * Add a bugdevlog to a bug
+ * return the ID of the new bugdevlog
+ * @param integer $p_bug_id          A bug identifier.
+ * @param string  $p_bugdevlog_text  The bugdevlog text to add.
+ * @param string  $p_time_tracking   Time tracking value - hh:mm string.
+ * @param boolean $p_private         Whether bugnote is private.
+ * @param integer $p_type            The bugdevlog type.
+ * @param string  $p_attr            Bugdevlog Attribute.
+ * @param integer $p_user_id         A user identifier.
+ * @param boolean $p_send_email      Whether to generate email.
+ * @param integer $p_date_submitted  Date submitted (defaults to now()).
+ * @param integer $p_last_modified   Last modification date (defaults to now()).
+ * @param boolean $p_skip_bug_update Skip bug last modification update (useful when importing bugs/bugdevlogs).
+ * @param boolean $p_log_history     Log changes to bugdevlog history (defaults to true).
+ * @return boolean|integer false or indicating bugdevlog id added
+ * @access public
+ */
+function bugdevlog_add( $p_bug_id, $p_bugdevlog_text, $p_time_tracking = '0:00', $p_private = false, $p_type = BUGNOTE, $p_attr = '', $p_user_id = null, $p_send_email = true, $p_date_submitted = 0, $p_last_modified = 0, $p_skip_bug_update = false, $p_log_history = true ) {
+	$c_bug_id = (int)$p_bug_id;
+	$c_time_tracking = helper_duration_to_minutes( $p_time_tracking );
+	$c_type = (int)$p_type;
+	$c_date_submitted = $p_date_submitted <= 0 ? db_now() : (int)$p_date_submitted;
+	$c_last_modified = $p_last_modified <= 0 ? db_now() : (int)$p_last_modified;
+
+	antispam_check();
+
+	if( REMINDER !== $p_type ) {
+		# Check if this is a time-tracking note
+		$t_time_tracking_enabled = config_get( 'time_tracking_enabled' );
+		if( ON == $t_time_tracking_enabled && $c_time_tracking > 0 ) {
+			$t_time_tracking_without_note = config_get( 'time_tracking_without_note' );
+			if( is_blank( $p_bugdevlog_text ) && OFF == $t_time_tracking_without_note ) {
+				error_parameters( lang_get( 'bugnote' ) );
+				trigger_error( ERROR_EMPTY_FIELD, ERROR );
+			}
+			$c_type = TIME_TRACKING;
+		} else if( is_blank( $p_bugdevlog_text ) ) {
+			# This is not time tracking (i.e. it's a normal bugnote)
+			# @todo should we not trigger an error in this case ?
+			return false;
+		}
+	}
+
+	# Event integration
+	$t_bugdevlog_text = event_signal( 'EVENT_BUGNOTE_DATA', $p_bugdevlog_text, $c_bug_id );
+/*
+	# insert bugdevlog text
+	$t_query = 'INSERT INTO {bugdevlog} ( note ) VALUES ( ' . db_param() . ' )';
+	db_query( $t_query, array( $t_bugdevlog_text ) );
+
+	# retrieve bugdevlog text id number
+	$t_bugdevlog_text_id = db_insert_id( db_get_table( 'bugdevlog' ) );
+*/
+	# get user information
+	if( $p_user_id === null ) {
+		$p_user_id = auth_get_current_user_id();
+	}
+
+	# Check for private bugdevlogs.
+	if( $p_private && access_has_bug_level( config_get( 'set_view_status_threshold' ), $p_bug_id, $p_user_id ) ) {
+		$t_view_state = VS_PRIVATE;
+	} else {
+		$t_view_state = VS_PUBLIC;
+	}
+
+	# insert bugdevlog info
+	$t_query = 'INSERT INTO {bugdevlog}
+			(bug_id, reporter_id, devlog, view_state, date_submitted, last_modified, note_type, note_attr, time_tracking)
+		VALUES ('
+		. db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', '
+		. db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', '
+		. db_param() . ' )';
+	$t_params = array(
+		$c_bug_id, $p_user_id, $t_bugdevlog_text, $t_view_state,
+		$c_date_submitted, $c_last_modified, $c_type, $p_attr,
+		$c_time_tracking );
+	db_query( $t_query, $t_params );
+
+	# get bugnote id
+	$t_bugdevlog_id = db_insert_id( db_get_table( 'bugdevlog' ) );
+
+	# update bug last updated
+	if( !$p_skip_bug_update ) {
+		bug_update_date( $p_bug_id );
+	}
+        /*
+	# log new bug
+	if( true == $p_log_history ) {
+		history_log_event_special( $p_bug_id, BUGNOTE_ADDED, bugnote_format_id( $t_bugdevlog_id ) );
+	}
+        */
+	# Event integration
+	event_signal( 'EVENT_BUGNOTE_ADD', array( $p_bug_id, $t_bugdevlog_id ) );
+        /*
+	# only send email if the text is not blank, otherwise, it is just recording of time without a comment.
+	if( true == $p_send_email && !is_blank( $t_bugdevlog_text ) ) {
+		email_generic( $p_bug_id, 'bugnote', 'email_notification_title_for_action_bugnote_submitted' );
+	}
+        */
+	return $t_bugdevlog_id;
+}
+
+/**
+ * Get a field for the given bugdevlog
+ * @param integer $p_bugdevlog_id A bugdevlog identifier.
+ * @param string  $p_field_name Field name to retrieve.
+ * @return string field value
+ * @access public
+ */
+function bugdevlog_get_field( $p_bugdevlog_id, $p_field_name ) {
+	static $s_vars;
+	global $g_cache_bugdevlog;
+
+	if( isset( $g_cache_bugdevlog[(int)$p_bugdevlog_id] ) ) {
+		return $g_cache_bugdevlog[(int)$p_bugdevlog_id]->$p_field_name;
+	}
+
+	if( $s_vars == null ) {
+		$s_vars = getClassProperties( 'BugdevlogData', 'public' );
+	}
+
+	if( !array_key_exists( $p_field_name, $s_vars ) ) {
+		error_parameters( $p_field_name );
+		trigger_error( ERROR_DB_FIELD_NOT_FOUND, WARNING );
+	}
+
+	$t_query = 'SELECT ' . $p_field_name . ' FROM {bugdevlog} WHERE id=' . db_param();
+	$t_result = db_query( $t_query, array( $p_bugdevlog_id ), 1 );
+
+	return db_result( $t_result );
+}
+
+/**
+ * Check if the given user is the reporter of the bugdevlog
+ * return true if the user is the reporter, false otherwise
+ * @param integer $p_bugdevlog_id A bugdevlog identifier.
+ * @param integer $p_user_id    An user identifier.
+ * @return boolean
+ * @access public
+ */
+function bugdevlog_is_user_reporter( $p_bugdevlog_id, $p_user_id ) {
+	if( bugdevlog_get_field( $p_bugdevlog_id, 'reporter_id' ) == $p_user_id ) {
+		return true;
+	} else {
+		return false;
+	}
 }

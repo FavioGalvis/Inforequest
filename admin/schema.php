@@ -752,3 +752,28 @@ $g_upgrade[199] = array( 'AlterColumnSQL', array( db_get_table( 'user' ), "email
 
 # Release marker: 1.3.0-beta.1
 # Release marker: 1.3.0
+/*
+$g_upgrade[200] = array('CreateTableSQL',array(db_get_table( 'bugdevlog' ),"
+  id 			 I  UNSIGNED PRIMARY NOTNULL AUTOINCREMENT,
+  bug_id 		 I  UNSIGNED NOTNULL DEFAULT '0',
+  reporter_id 		 I  UNSIGNED NOTNULL DEFAULT '0',
+  devlog		XL NOTNULL,
+  view_state 		I2 NOTNULL DEFAULT '10',
+  date_submitted 	T NOTNULL DEFAULT '" . db_null_date() . "',
+  last_modified 	T NOTNULL DEFAULT '" . db_null_date() . "',
+  note_type 		 I  DEFAULT '0',
+  note_attr 		C(250) DEFAULT \" '' \"
+',array('mysql' => 'ENGINE=MyISAM DEFAULT CHARSET=utf8', 'pgsql' => 'WITHOUT OIDS')));
+
+$g_upgrade[201] = array('AddColumnSQL',array(db_get_table( 'bugdevlog' ), 'time_tracking I UNSIGNED NOTNULL DEFAULT " 0 "'));
+ */
+
+/*
+$g_upgrade[202] = array('CreateTableSQL',array(db_get_table( 'user_timer' ),"
+  user_id 		I UNSIGNED PRIMARY NOTNULL,
+  bug_id                I UNSIGNED NOTNULL,
+  date_started   	T NOTNULL DEFAULT '" . db_null_date() . "',
+  saved_timer           I UNSIGNED NOTNULL,
+  ongoing 		I  DEFAULT '0',
+',array('mysql' => 'ENGINE=MyISAM DEFAULT CHARSET=utf8', 'pgsql' => 'WITHOUT OIDS')));
+ */
